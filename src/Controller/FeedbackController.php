@@ -23,6 +23,7 @@ class FeedbackController extends AbstractController
             'feedbacks' => $userFeedbackRepository->findBy([
                 'user_id' => $this->getUser()->getId()
             ]),
+            'averageFeedback' => round($userFeedbackRepository->getAverageRating($this->getUser()), 1),
         ]);
     }
 }

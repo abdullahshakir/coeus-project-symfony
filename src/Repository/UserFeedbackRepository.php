@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\UserFeedback;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,4 +48,13 @@ class UserFeedbackRepository extends ServiceEntityRepository
         ;
     }
     */
+    public function getAverageRating(User $user)
+    {
+        return $this->createQueryBuilder('uf')
+        ->select('avg(uf.rating) as averageRating')
+        ->where('uf.user_id = :userId')
+        ->setParameter('userId', $user->getId())
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
 }
