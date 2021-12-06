@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Repository\CategoryRepository;
 
 class HomepageController extends AbstractController
 {
@@ -35,8 +36,10 @@ class HomepageController extends AbstractController
      * )
      * 
      */
-    public function buyerHomepageAction()
+    public function buyerHomepageAction(CategoryRepository $categoryRepository)
     {
-        return new Response('buyer homepage');
+        return $this->render('buyer/dashboard.html.twig', [
+            'categories' => $categoryRepository->findAll()
+        ]);
     }
 }

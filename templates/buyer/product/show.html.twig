@@ -1,0 +1,132 @@
+{% extends 'layouts/buyer.base.html.twig' %}
+
+{% block title %}Product{% endblock %}
+
+{% block main %}
+<div class="content-wraper">
+    <div class="container">
+        <div class="row single-product-area">
+            <div class="col-lg-5 col-md-6">
+                <!-- Product Details Left -->
+                <div class="product-details-left">
+                    <div class="product-details-images slider-navigation-1">
+                        <div class="lg-image" style="padding-top: 68px;">
+                            <img src="{{ asset(product_images_directory ~ product.imageLink) }}" alt="product image">
+                        </div>
+                    </div>
+                </div>
+                <!--// Product Details Left -->
+            </div>
+
+            <div class="col-lg-7 col-md-6">
+                <div class="product-details-view-content sp-normal-content pt-60">
+                    <div class="product-info">
+                        <h2>{{ product.name }}</h2>
+                        <span class="product-details-ref">{{ product.user.name }}</span>
+                        <div class="rating-box pt-20">
+                            <ul class="rating rating-with-review-item">
+                                <li><i class="fa fa-star-o"></i></li>
+                                <li>{{ product.averageRating == 0 ? 'Not rated yet' : product.averageRating }}</li>
+                            </ul>
+                        </div>
+                        <div class="price-box pt-20">
+                            <span class="new-price new-price-2">${{ product.price }}</span>
+                        </div>
+                        <div class="product-desc">
+                            <p>
+                                <span>
+                                    {{ product.description }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="single-add-to-cart">
+                            <form action="#" class="cart-quantity">
+                                <div class="quantity">
+                                    <label>Quantity</label>
+                                    <div class="cart-plus-minus">
+                                        <input class="cart-plus-minus-box" value="1" type="text">
+                                        <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
+                                        <div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>
+                                    </div>
+                                </div>
+                                <button class="add-to-cart" type="submit">Add to cart</button>
+                            </form>
+                        </div>
+                        <div class="product-additional-info">
+                            <div class="product-social-sharing">
+                                <ul>
+                                    <li class="facebook"><a href="#"><i class="fa fa-facebook"></i>Facebook</a></li>
+                                    <li class="twitter"><a href="#"><i class="fa fa-twitter"></i>Twitter</a></li>
+                                    <li class="google-plus"><a href="#"><i class="fa fa-google-plus"></i>Google +</a></li>
+                                    <li class="instagram"><a href="#"><i class="fa fa-instagram"></i>Instagram</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+        </div>
+    </div>
+</div>
+<div class="product-area pt-40">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="li-product-tab">
+                    <ul class="nav li-product-menu">
+                        <li><a class="active" data-toggle="tab" href="#description"><span>Description</span></a></li>
+                        <li><a data-toggle="tab" href="#reviews"><span>Reviews</span></a></li>
+                    </ul>               
+                </div>
+                <!-- Begin Li's Tab Menu Content Area -->
+            </div>
+        </div>
+        <div class="tab-content">
+            <div id="description" class="tab-pane active show" role="tabpanel">
+                <div class="product-description">
+                    <span>
+                        {{ product.description }}
+                    </span>
+                </div>
+            </div>
+            <div id="reviews" class="tab-pane" role="tabpanel">
+                <div class="product-reviews">
+                    <div class="product-details-comment-block">
+                        <table id="feedbacks" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Message</th>
+                                    <th>Rating</th>
+                                    <th>Created At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for feedback in product.productFeedback %}
+                                <tr>
+                                    <td>{{ feedback.message }}</td>
+                                    <td>{{ feedback.rating }}</td>
+                                    <td>{{ feedback.createdAt|date('F j, Y g:i a') }}</td>
+                                </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8">no reviews found</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            $('#feedbacks').DataTable();
+        } );
+    </script>
+{% endblock %}

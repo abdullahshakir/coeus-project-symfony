@@ -252,4 +252,22 @@ class Product
 
         return $this;
     }
+
+    public function getAverageRating()
+    {
+        $count = $this->getProductFeedback()->count();
+
+        if ($count == 0) {
+            return 0;
+        }
+
+        $feedbacks = $this->getProductFeedback();
+        $totalRating = null;
+        
+        foreach ($feedbacks as $feedback) {
+            $totalRating += $feedback->getRating();
+        }
+
+        return round($totalRating/$count, 1);
+    }
 }

@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 class ProductController extends AbstractController
 {
     /**
-     * @Route("/", name="product_index", methods={"GET"})
+     * @Route("/", name="product_index", methods={"GET"}, host="seller.%domain%")
      * @IsGranted("ROLE_SELLER")
      */
     public function index(ProductRepository $productRepository): Response
@@ -33,7 +33,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="product_new", methods={"GET","POST"})
+     * @Route("/new", name="product_new", methods={"GET","POST"}, host="seller.%domain%")
      */
     public function new(Request $request, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository): Response
     {
@@ -82,7 +82,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="product_show", methods={"GET"})
+     * @Route("/{id}", name="product_show", methods={"GET"}, host="seller.%domain%")
      * @IsGranted("ROLE_SELLER")
      */
     public function show(Product $product, OrderProductRepository $orderProductRepository, ProductFeedbackRepository $productFeedbackRepository): Response
@@ -97,7 +97,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="product_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="product_edit", methods={"GET","POST"}, host="seller.%domain%")
      */
     public function edit(Request $request, Product $product, EntityManagerInterface $entityManager): Response
     {
@@ -141,7 +141,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="product_delete", methods={"POST"})
+     * @Route("/{id}", name="product_delete", methods={"POST"}, host="seller.%domain%")
      * @IsGranted("ROLE_SELLER")
      */
     public function delete(Request $request, Product $product, EntityManagerInterface $entityManager, Filesystem $filesystem): Response
@@ -153,5 +153,18 @@ class ProductController extends AbstractController
         }
 
         return $this->redirectToRoute('product_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/{id}", name="buyer_product_show", methods={"GET"}, host="buyer.%domain%")
+     */
+    public function showProduct(Product $product, OrderProductRepository $orderProductRepository): Response
+    {
+        return $this->render('buyer/product/show.html.twig', [
+            'product' => $product,
+            'data' => [
+                'totalSales' => $orderProductRepository->getTotalSales($product),
+            ]
+        ]);
     }
 }

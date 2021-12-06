@@ -298,4 +298,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getAverageRating()
+    {
+        $count = $this->getUserFeedback()->count();
+
+        if ($count == 0) {
+            return 0;
+        }
+
+        $feedbacks = $this->getUserFeedback();
+        $totalRating = null;
+        
+        foreach ($feedbacks as $feedback) {
+            $totalRating += $feedback->getRating();
+        }
+
+        return round($totalRating/$count, 1);
+    }
+
 }
