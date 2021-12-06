@@ -6,6 +6,8 @@ use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
+use App\Repository\OrderProductRepository;
+use App\Repository\ProductFeedbackRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,10 +85,14 @@ class ProductController extends AbstractController
      * @Route("/{id}", name="product_show", methods={"GET"})
      * @IsGranted("ROLE_SELLER")
      */
-    public function show(Product $product): Response
+    public function show(Product $product, OrderProductRepository $orderProductRepository, ProductFeedbackRepository $productFeedbackRepository): Response
     {
         return $this->render('seller/product/show.html.twig', [
             'product' => $product,
+            'data' => [
+                'totalSales' => $orderProductRepository->getTotalSales($product),
+                'feedback' => $productFeedbackRepository->findBy(['product_id' => $product->getId()]),
+            ]
         ]);
     }
 

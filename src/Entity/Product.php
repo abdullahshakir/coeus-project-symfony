@@ -69,9 +69,15 @@ class Product
      */
     private $quantity;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ProductFeedback::class, mappedBy="product")
+     */
+    private $productFeedback;
+
     public function __construct()
     {
         $this->orderProducts = new ArrayCollection();
+        $this->productFeedback = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -213,6 +219,36 @@ class Product
     public function setQuantity(string $quantity): self
     {
         $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductFeedback[]
+     */
+    public function getProductFeedback(): Collection
+    {
+        return $this->productFeedback;
+    }
+
+    public function addProductFeedback(ProductFeedback $productFeedback): self
+    {
+        if (!$this->productFeedback->contains($productFeedback)) {
+            $this->productFeedback[] = $productFeedback;
+            $productFeedback->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductFeedback(ProductFeedback $productFeedback): self
+    {
+        if ($this->productFeedback->removeElement($productFeedback)) {
+            // set the owning side to null (unless already changed)
+            if ($productFeedback->getProduct() === $this) {
+                $productFeedback->setProduct(null);
+            }
+        }
 
         return $this;
     }

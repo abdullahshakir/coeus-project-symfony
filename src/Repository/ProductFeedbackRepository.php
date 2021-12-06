@@ -2,26 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Product;
-use App\Entity\OrderProduct;
+use App\Entity\ProductFeedback;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method Product|null find($id, $lockMode = null, $lockVersion = null)
- * @method Product|null findOneBy(array $criteria, array $orderBy = null)
- * @method Product[]    findAll()
- * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ProductFeedback|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProductFeedback|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ProductFeedback[]    findAll()
+ * @method ProductFeedback[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProductRepository extends ServiceEntityRepository
+class ProductFeedbackRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Product::class);
+        parent::__construct($registry, ProductFeedback::class);
     }
 
     // /**
-    //  * @return Product[] Returns an array of Product objects
+    //  * @return ProductFeedback[] Returns an array of ProductFeedback objects
     //  */
     /*
     public function findByExampleField($value)
@@ -38,7 +37,7 @@ class ProductRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Product
+    public function findOneBySomeField($value): ?ProductFeedback
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.exampleField = :val')

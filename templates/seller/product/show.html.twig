@@ -37,6 +37,28 @@
                         <th>Price</th>
                         <td>{{ product.price }}</td>
                     </tr>
+                    <tr>
+                        <th>Total Sales</th>
+                        <td>{{ data.totalSales }}</td>
+                    </tr>
+                    <tr>
+                        <th>Feedback</th>
+                        <table class="table">
+                            <thead>
+                                <th>Id</th>
+                                <th>Message</th>
+                                <th>Rating</th>
+                            </thead>
+                            <tbody>
+                                {% for feedback in data.feedback %}
+                                <tr>
+                                    <td>{{ feedback.id }}</td>
+                                    <td>{{ feedback.message }}</td>
+                                    <td>{{ feedback.rating }}</td>
+                                </tr>
+                                {% endfor %}
+                        </table>
+                    </tr>
                 </tbody>
             </table>
         </div>

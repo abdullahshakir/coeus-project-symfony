@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Product;
 use App\Entity\OrderProduct;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,4 +48,14 @@ class OrderProductRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getTotalSales(Product $product)
+    {
+        return $this->createQueryBuilder('op')
+        ->select('sum(op.quantity) as totalSales')
+        ->where('op.product_id = :productId')
+        ->setParameter('productId', $product->getId())
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
 }
