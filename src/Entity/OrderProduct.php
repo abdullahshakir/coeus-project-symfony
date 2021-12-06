@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OrderProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * @ORM\Entity(repositoryClass=OrderProductRepository::class)
@@ -36,6 +37,12 @@ class OrderProduct
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="orderProducts")
      */
     private $product;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="orderProducts")
+     * @JoinColumn(name="order_id", referencedColumnName="id")
+     */
+    private $productOrder;
 
     public function getId(): ?int
     {
@@ -86,6 +93,18 @@ class OrderProduct
     public function setProduct(?Product $product): self
     {
         $this->product = $product;
+
+        return $this;
+    }
+
+    public function getProductOrder(): ?Order
+    {
+        return $this->productOrder;
+    }
+
+    public function setProductOrder(?Order $productOrder): self
+    {
+        $this->productOrder = $productOrder;
 
         return $this;
     }

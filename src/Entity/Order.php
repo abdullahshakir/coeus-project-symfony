@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,6 +34,21 @@ class Order
      * @ORM\Column(type="datetime_immutable")
      */
     private $createdAt;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $status;
+
+    /**
+     * @ORM\OneToMany(targetEntity=OrderProduct::class, mappedBy="productOrder")
+     */
+    private $orderProducts;
+
+    public function __construct()
+    {
+        $this->orderProducts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -70,6 +87,48 @@ class Order
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|OrderProduct[]
+     */
+    public function getOrderProducts(): Collection
+    {
+        return $this->orderProducts;
+    }
+
+    public function addOrderProduct(OrderProduct $orderProduct): self
+    {
+        if (!$this->orderProducts->contains($orderProduct)) {
+            $this->orderProducts[] = $orderProduct;
+            $orderProduct->setProductOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrderProduct(OrderProduct $orderProduct): self
+    {
+        if ($this->orderProducts->removeElement($orderProduct)) {
+            // set the owning side to null (unless already changed)
+            if ($orderProduct->getProductOrder() === $this) {
+                $orderProduct->setProductOrder(null);
+            }
+        }
 
         return $this;
     }
