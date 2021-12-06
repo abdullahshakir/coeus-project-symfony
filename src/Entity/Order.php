@@ -45,6 +45,16 @@ class Order
      */
     private $orderProducts;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $seller_id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="sellerOrders")
+     */
+    private $seller;
+
     public function __construct()
     {
         $this->orderProducts = new ArrayCollection();
@@ -129,6 +139,30 @@ class Order
                 $orderProduct->setProductOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSellerId(): ?int
+    {
+        return $this->seller_id;
+    }
+
+    public function setSellerId(int $seller_id): self
+    {
+        $this->seller_id = $seller_id;
+
+        return $this;
+    }
+
+    public function getSeller(): ?User
+    {
+        return $this->seller;
+    }
+
+    public function setSeller(?User $seller): self
+    {
+        $this->seller = $seller;
 
         return $this;
     }

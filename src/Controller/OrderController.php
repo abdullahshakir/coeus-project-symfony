@@ -24,13 +24,16 @@ class OrderController extends AbstractController
     public function index(OrderRepository $orderRepository): Response
     {
         return $this->render('seller/order/index.html.twig', [
-            'orders' => $orderRepository->findAll(),
+            'orders' => $orderRepository->findBy([
+                'seller_id' => $this->getUser()->getId()
+            ]),
         ]);
     }
 
     /**
      * @Route("/{id}", name="order_show", methods={"GET"})
      * @IsGranted("ROLE_SELLER")
+     * @IsGranted("show", subject="order")
      */
     public function show(Order $order): Response
     {
@@ -41,6 +44,8 @@ class OrderController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="seller_order_edit", methods={"GET","POST"})
+     * @IsGranted("ROLE_SELLER")
+     * @IsGranted("edit", subject="order")
      */
     public function edit(Request $request, Order $order, EntityManagerInterface $entityManager): Response
     {

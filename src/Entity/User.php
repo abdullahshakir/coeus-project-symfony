@@ -59,10 +59,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $orders;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Order::class, mappedBy="seller")
+     */
+    private $sellerOrders;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->sellerOrders = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -220,6 +226,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($order->getUser() === $this) {
                 $order->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Order[]
+     */
+    public function getSellerOrders(): Collection
+    {
+        return $this->sellerOrders;
+    }
+
+    public function addSellerOrder(Order $sellerOrder): self
+    {
+        if (!$this->sellerOrders->contains($sellerOrder)) {
+            $this->sellerOrders[] = $sellerOrder;
+            $sellerOrder->setSeller($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSellerOrder(Order $sellerOrder): self
+    {
+        if ($this->sellerOrders->removeElement($sellerOrder)) {
+            // set the owning side to null (unless already changed)
+            if ($sellerOrder->getSeller() === $this) {
+                $sellerOrder->setSeller(null);
             }
         }
 
