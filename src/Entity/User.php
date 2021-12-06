@@ -64,11 +64,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $sellerOrders;
 
+    /**
+     * @ORM\OneToMany(targetEntity=UserFeedback::class, mappedBy="user")
+     */
+    private $userFeedback;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
         $this->orders = new ArrayCollection();
         $this->sellerOrders = new ArrayCollection();
+        $this->userFeedback = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -256,6 +262,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($sellerOrder->getSeller() === $this) {
                 $sellerOrder->setSeller(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserFeedback[]
+     */
+    public function getUserFeedback(): Collection
+    {
+        return $this->userFeedback;
+    }
+
+    public function addUserFeedback(UserFeedback $userFeedback): self
+    {
+        if (!$this->userFeedback->contains($userFeedback)) {
+            $this->userFeedback[] = $userFeedback;
+            $userFeedback->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserFeedback(UserFeedback $userFeedback): self
+    {
+        if ($this->userFeedback->removeElement($userFeedback)) {
+            // set the owning side to null (unless already changed)
+            if ($userFeedback->getUser() === $this) {
+                $userFeedback->setUser(null);
             }
         }
 

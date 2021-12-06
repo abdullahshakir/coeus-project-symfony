@@ -43,7 +43,7 @@
                     </tr>
                     <tr>
                         <th>Feedback</th>
-                        <table class="table">
+                        <table id="feedback" class="table table-striped table-bordered">
                             <thead>
                                 <th>Id</th>
                                 <th>Message</th>
@@ -64,4 +64,13 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            $('#feedback').DataTable();
+        } );
+    </script>
 {% endblock %}
