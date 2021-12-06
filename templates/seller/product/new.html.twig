@@ -1,0 +1,20 @@
+{% extends 'layouts/seller.base.html.twig' %}
+
+{% block title %}New Product{% endblock %}
+
+{% block main %}
+    <div class="row">
+        <div class="col-sm-12">
+            <!-- Basic Form Inputs card start -->
+            <div class="card">
+                <div class="card-header">
+                    <h5>Product</h5>
+                </div>
+                <div class="card-block">
+                    <h4 class="sub-title">Create New Product</h4>
+                    {{ include('seller/product/_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

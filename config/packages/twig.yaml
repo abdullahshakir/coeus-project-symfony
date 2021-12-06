@@ -1,7 +1,7 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
     globals:
-        post_attachments_directory: 'uploads/postattachments/'
+        product_images_directory: 'uploads/productimages/'
 
 when@test:
     twig:

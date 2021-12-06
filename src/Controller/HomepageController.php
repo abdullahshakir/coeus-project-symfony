@@ -22,7 +22,7 @@ class HomepageController extends AbstractController
      */
     public function sellerHomepageAction()
     {
-        return new Response('seller homepage');
+        return $this->render('seller/dashboard.html.twig');
     }
 
     /**

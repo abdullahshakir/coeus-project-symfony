@@ -1,0 +1,55 @@
+<nav class="pcoded-navbar">
+    <div class="sidebar_toggle"><a href="#"><i class="icon-close icons"></i></a></div>
+    <div class="pcoded-inner-navbar main-menu">
+        <div class="">
+            <div class="main-menu-header">
+                <img class="img-80 img-radius" src="{{ asset('seller_assets/images/avatar-4.jpg') }}" alt="User-Profile-Image">
+                <div class="user-details">
+                    <span id="more-details">{{ app.user.name }}<i class="fa fa-caret-down"></i></span>
+                </div>
+            </div>
+
+            <div class="main-menu-content">
+                <ul>
+                    <li class="more-details">
+                        <a href="{{ path('user_edit') }}"><i class="ti-user"></i>Edit Profile</a>
+                        <a href="{{ path('app_logout') }}"><i class="ti-layout-sidebar-left"></i>Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="pcoded-navigation-label" data-i18n="nav.category.forms"></div>
+        <ul class="pcoded-item pcoded-left-item">
+            <li>
+                <a href="{{ path('seller_homepage') }}" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-layers"></i><b>FC</b></span>
+                    <span class="pcoded-mtext" data-i18n="nav.form-components.main">Dashboard</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+            </li>
+            <li class="pcoded-hasmenu">
+                <a href="javascript:void(0)" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-layout-grid2-alt"></i></span>
+                    <span class="pcoded-mtext"  data-i18n="nav.basic-components.main">Products</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+                <ul class="pcoded-submenu">
+                    <li>
+                        <a href="{{ path('product_index') }}" class="waves-effect waves-dark">
+                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                            <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">List Products</span>
+                            <span class="pcoded-mcaret"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('product_new') }}" class="waves-effect waves-dark">
+                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                            <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">Add New Product</span>
+                            <span class="pcoded-mcaret"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
