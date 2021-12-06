@@ -18,7 +18,7 @@ class HomepageController extends AbstractController
      *     defaults={"domain"="%domain%"},
      *     requirements={"domain"="%domain%"}
      * )
-     * 
+     * @IsGranted("ROLE_SELLER")
      */
     public function sellerHomepageAction()
     {

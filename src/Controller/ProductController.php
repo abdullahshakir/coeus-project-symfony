@@ -21,6 +21,7 @@ class ProductController extends AbstractController
 {
     /**
      * @Route("/", name="product_index", methods={"GET"})
+     * @IsGranted("ROLE_SELLER")
      */
     public function index(ProductRepository $productRepository): Response
     {
@@ -81,6 +82,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/{id}", name="product_show", methods={"GET"})
      * @IsGranted("show", subject="product")
+     * @IsGranted("ROLE_SELLER")
      */
     public function show(Product $product): Response
     {
@@ -137,6 +139,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/{id}", name="product_delete", methods={"POST"})
      * @IsGranted("delete", subject="product")
+     * @IsGranted("ROLE_SELLER")
      */
     public function delete(Request $request, Product $product, EntityManagerInterface $entityManager, Filesystem $filesystem): Response
     {
