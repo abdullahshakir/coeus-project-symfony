@@ -1,0 +1,78 @@
+{% extends 'layouts/buyer.base.html.twig' %}
+
+{% block title %}Order{% endblock %}
+
+{% block main %}
+<div class="content-wraper">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <!-- Basic Form Inputs card start -->
+                <div class="card mb-10">
+                    <div class="card-header">
+                        <h5>Order</h5>
+                    </div>
+                    <div class="card-block">
+
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>Id</th>
+                                    <td>{{ order.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Buyer Name</th>
+                                    <td>{{ order.user.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>{{ order.status }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Created At</th>
+                                    <td>{{ order.createdAt|date('F j, Y g:i a') }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Products</th>
+                                    <table id="order-products" class="table table-striped table-bordered">
+                                        <thead>
+                                            <th>Id</th>
+                                            <th>Name</th>
+                                            <th>Image</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Total</th>
+                                        </thead>
+                                        <tbody>
+                                            {% for orderProduct in order.orderProducts %}
+                                            <tr>
+                                                <td>{{ orderProduct.product.id }}</td>
+                                                <td><a href="{{ path('buyer_product_show', {'id': orderProduct.product.id}) }}">{{ orderProduct.product.name }}</a></td>
+                                                <td><a target="_blank" href="{{ asset(product_images_directory ~ orderProduct.product.imageLink) }}"><img style="height:50px;width:50px;" src={{ asset(product_images_directory ~ orderProduct.product.imageLink) }}/></a></td>
+                                                <td>${{ orderProduct.product.price }}</td>
+                                                <td>{{ orderProduct.quantity }}</td>
+                                                <td>{{ orderProduct.product.price * orderProduct.quantity }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                    </table>
+                                </tr>
+                        </table>
+                    </div>
+                </div>
+                <div style="text-align:center;margin-bottom:10px;">
+                    <a href="{{ path('orders_history') }}" class="btn btn-warning"> Back to Orders </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function() {
+            $('#order-products').DataTable();
+        } );
+    </script>
+{% endblock %}

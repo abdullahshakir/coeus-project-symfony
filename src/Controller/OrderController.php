@@ -18,7 +18,7 @@ use App\Form\SellerOrderType;
 class OrderController extends AbstractController
 {
     /**
-     * @Route("/", name="seller_order_index", methods={"GET"})
+     * @Route("/", name="seller_order_index", methods={"GET"}, host="seller.%domain%")
      * @IsGranted("ROLE_SELLER")
      */
     public function index(OrderRepository $orderRepository): Response
@@ -31,7 +31,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="order_show", methods={"GET"})
+     * @Route("/{id}", name="order_show", methods={"GET"}, host="seller.%domain%")
      * @IsGranted("ROLE_SELLER")
      * @IsGranted("show", subject="order")
      */
@@ -43,7 +43,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="seller_order_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="seller_order_edit", methods={"GET","POST"}, host="seller.%domain%")
      * @IsGranted("ROLE_SELLER")
      * @IsGranted("edit", subject="order")
      */
@@ -61,6 +61,31 @@ class OrderController extends AbstractController
         return $this->renderForm('seller/order/edit.html.twig', [
             'order' => $order,
             'form' => $form,
+        ]);
+    }
+
+    /**
+     * @Route("/", name="orders_history", methods={"GET"}, host="buyer.%domain%")
+     * @IsGranted("ROLE_BUYER")
+     */
+    public function buyerOrdersIndex(OrderRepository $orderRepository): Response
+    {
+        return $this->render('buyer/order/index.html.twig', [
+            'orders' => $orderRepository->findBy([
+                'user_id' => $this->getUser()->getId()
+            ]),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}", name="buyer_order_show", methods={"GET"}, host="buyer.%domain%")
+     * @IsGranted("ROLE_BUYER")
+     * @IsGranted("show", subject="order")
+     */
+    public function buyerOrderShow(Order $order): Response
+    {
+        return $this->render('buyer/order/show.html.twig', [
+            'order' => $order,
         ]);
     }
 }

@@ -88,6 +88,9 @@
                         <nav>
                             <ul>
                                 <li><a href="{{ path('buyer_homepage') }}">Home</a></li>
+                            {% if app.user %}
+                                <li><a href="{{ path('orders_history') }}">Orders</a></li>
+                            {% endif %}
                             </ul>
                         </nav>
                     </div>
