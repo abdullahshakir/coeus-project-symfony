@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Form\AddToCartType;
 use App\Repository\ProductRepository;
 use App\Repository\CategoryRepository;
 use App\Repository\OrderProductRepository;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Filesystem\Filesystem;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use App\Manager\CartManager;
 
 /**
  * @Route("/product")
@@ -156,15 +158,34 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="buyer_product_show", methods={"GET"}, host="buyer.%domain%")
+     * @Route("/{id}", name="buyer_product_show", methods={"GET","POST"}, host="buyer.%domain%")
      */
-    public function showProduct(Product $product, OrderProductRepository $orderProductRepository): Response
+    public function showProduct(Request $request, Product $product, OrderProductRepository $orderProductRepository, CartManager $cartManager): Response
     {
+        $form = $this->createForm(AddToCartType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $item = $form->getData();
+            $item->setProduct($product);
+
+            $cart = $cartManager->getCurrentCart();
+            $cart
+                ->addOrderProduct($item)
+                ->setUpdatedAt(new \DateTime());
+
+            $cartManager->save($cart);
+
+            return $this->redirectToRoute('cart');
+        }
+
         return $this->render('buyer/product/show.html.twig', [
             'product' => $product,
             'data' => [
                 'totalSales' => $orderProductRepository->getTotalSales($product),
-            ]
+            ],
+            'form' => $form->createView()
         ]);
     }
 }

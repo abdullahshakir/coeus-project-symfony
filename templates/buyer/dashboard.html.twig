@@ -93,7 +93,7 @@
                             <div class="single-product-wrap">
                                 <div class="product-image">
                                     <a href="{{ path('buyer_product_show', {'id': product.id}) }}">
-                                        <img src="{{ asset(product_images_directory ~ product.imageLink) }}" alt="Product Image">
+                                        <img style="width:200px;height:200px;" src="{{ asset(product_images_directory ~ product.imageLink) }}" alt="Product Image">
                                     </a>
                                     <span class="sticker">New</span>
                                 </div>
@@ -114,11 +114,6 @@
                                         <div class="price-box">
                                             <span class="new-price">${{ product.price }}</span>
                                         </div>
-                                    </div>
-                                    <div class="add-actions">
-                                        <ul class="add-actions-link">
-                                            <li class="add-cart active"><a href="#">Add to cart</a></li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\OrderProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=OrderProductRepository::class)
@@ -30,6 +31,8 @@ class OrderProduct
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\NotBlank()
+     * @Assert\GreaterThanOrEqual(1)
      */
     private $quantity;
 
@@ -108,4 +111,27 @@ class OrderProduct
 
         return $this;
     }
+
+    /**
+     * Tests if the given product given corresponds to the same order product.
+     *
+     * @param OrderProduct $item
+     *
+     * @return bool
+     */
+    public function equals(OrderProduct $product): bool
+    {
+        return $this->getProduct()->getId() === $product->getProduct()->getId();
+    }
+
+    /**
+     * Calculates the product total.
+     *
+     * @return float|int
+     */
+    public function getTotal(): float
+    {
+        return $this->getProduct()->getPrice() * $this->getQuantity();
+    }
+
 }

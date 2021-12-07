@@ -1,0 +1,89 @@
+{% extends 'layouts/buyer.base.html.twig' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block main %}
+
+<div class="Shopping-cart-area pt-60 pb-60">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                {% if (form.orderProducts.count > 0) %}
+                    {{ form_start(form) }}
+                        <div class="table-content table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="li-product-remove">remove</th>
+                                        <th class="li-product-thumbnail">images</th>
+                                        <th class="cart-product-name">Product</th>
+                                        <th class="li-product-price">Unit Price</th>
+                                        <th class="li-product-quantity">Quantity</th>
+                                        <th class="li-product-subtotal">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in form.orderProducts %}
+                                    <tr>
+                                        <td class="li-product-remove">{{ form_widget(item.remove, {'attr': {'class': 'btn btn-dark btn-sm'}}) }}</td>
+                                        <td class="li-product-thumbnail"><a href="#"><img style="height: 100px; width:100px;" src="{{ asset(product_images_directory ~ item.vars.data.product.imageLink) }}" alt="product image"></a></td>
+                                        <td class="li-product-name"><a href="#">{{ item.vars.data.product.name }}</a></td>
+                                        <td class="li-product-price"><span class="amount">${{ item.vars.data.product.price }}</span></td>
+                                        <td class="quantity">
+                                            {{ form_label(item.quantity) }}
+                                            <div class="cart-plus-minus">
+                                                {{ form_widget(item.quantity, {
+                                                    'attr': {
+                                                        'class': 'cart-plus-minus-box ' ~ (item.quantity.vars.valid ? '' : 'is-invalid')
+                                                    }
+                                                }) }}
+                                                <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
+                                                <div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>
+                                                <div class="invalid-feedback">
+                                                    {{ form_errors(item.quantity) }}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="product-subtotal"><span class="amount">${{ item.vars.value.quantity * item.vars.data.product.price }}</span></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="coupon-all">
+                                    <div class="coupon2">
+                                        {{ form_widget(form.save, {'attr': {'class': 'btn btn-warning'}}) }}
+                                        {{ form_widget(form.clear, {'attr': {'class': 'btn btn-light'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5 ml-auto">
+                                <div class="cart-page-total">
+                                    <h2>Cart totals</h2>
+                                    <ul>
+                                        <li>Total <span>${{ cart.total }}</span></li>
+                                    </ul>
+
+                                    {{ form_end(form) }}
+                                    
+                                    {{ form_start(placeOrderForm) }}
+                                        {{ form_widget(placeOrderForm.placeOrder, {'attr': {'class': 'btn btn-warning mt-2'}}) }}
+                                    {{ form_end(placeOrderForm) }}
+                                </div>
+                            </div>
+                        </div>
+
+                {% else %}
+                    <div> Cart is empty </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

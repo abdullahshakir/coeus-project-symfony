@@ -23,7 +23,7 @@ class RegistrationController extends AbstractController
     }
 
     /**
-     * @Route("/registration", name="registration")
+     * @Route("/registration", name="registration", host="%domain%")
      */
     public function index(Request $request)
     {

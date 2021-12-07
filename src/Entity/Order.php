@@ -21,7 +21,7 @@ class Order
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $user_id;
 
@@ -31,29 +31,27 @@ class Order
     private $user;
 
     /**
-     * @ORM\Column(type="datetime_immutable")
+     * @ORM\Column(type="datetime")
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $status;
+    private $status = self::STATUS_CART;
 
     /**
-     * @ORM\OneToMany(targetEntity=OrderProduct::class, mappedBy="productOrder")
+     * @ORM\OneToMany(targetEntity=OrderProduct::class, mappedBy="productOrder", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $orderProducts;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="datetime")
      */
-    private $seller_id;
+    private $updatedAt;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="sellerOrders")
-     */
-    private $seller;
+    const STATUS_CART = 'cart';
+    const STATUS_NEW = 'new';
 
     public function __construct()
     {
@@ -89,12 +87,12 @@ class Order
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(\DateTime $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -123,10 +121,18 @@ class Order
 
     public function addOrderProduct(OrderProduct $orderProduct): self
     {
-        if (!$this->orderProducts->contains($orderProduct)) {
-            $this->orderProducts[] = $orderProduct;
-            $orderProduct->setProductOrder($this);
+        foreach ($this->getOrderProducts() as $existingProduct) {
+            // The product already exists, update the quantity
+            if ($existingProduct->equals($orderProduct)) {
+                $existingProduct->setQuantity(
+                    $existingProduct->getQuantity() + $orderProduct->getQuantity()
+                );
+                return $this;
+            }
         }
+    
+        $this->orderProducts[] = $orderProduct;
+        $orderProduct->setProductOrder($this);
 
         return $this;
     }
@@ -143,27 +149,46 @@ class Order
         return $this;
     }
 
-    public function getSellerId(): ?int
+    /**
+     * Removes all items from the order.
+     *
+     * @return $this
+     */
+    public function removeOrderProducts(): self
     {
-        return $this->seller_id;
-    }
-
-    public function setSellerId(int $seller_id): self
-    {
-        $this->seller_id = $seller_id;
+        foreach ($this->getOrderProducts() as $product) {
+            $this->removeOrderProduct($product);
+        }
 
         return $this;
     }
 
-    public function getSeller(): ?User
+    /**
+     * Calculates the order total.
+     *
+     * @return float
+     */
+    public function getTotal(): float
     {
-        return $this->seller;
+        $total = 0;
+
+        foreach ($this->getOrderProducts() as $product) {
+            $total += $product->getTotal();
+        }
+
+        return $total;
     }
 
-    public function setSeller(?User $seller): self
+    public function getUpdatedAt(): ?\DateTime
     {
-        $this->seller = $seller;
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
+
 }
