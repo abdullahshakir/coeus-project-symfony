@@ -15,10 +15,10 @@ class SellerOrderType extends AbstractType
         $builder
             ->add('status', ChoiceType::class, [
                 'choices'  => [
-                    'New' => 'new',
                     'In Progress' => 'inprogress',
                     'Delivered' => 'delivered',
                 ],
+                'mapped' => false,
             ]);
     }
 

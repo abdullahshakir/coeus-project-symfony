@@ -47,6 +47,15 @@ class OrderProduct
      */
     private $productOrder;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $status = self::STATUS_NEW;
+
+    const STATUS_NEW = 'new';
+    const STATUS_INPROGRESS = 'inprogress';
+    const STATUS_COMPLETE = 'complete';
+
     public function getId(): ?int
     {
         return $this->id;
@@ -132,6 +141,18 @@ class OrderProduct
     public function getTotal(): float
     {
         return $this->getProduct()->getPrice() * $this->getQuantity();
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
     }
 
 }

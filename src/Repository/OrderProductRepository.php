@@ -58,4 +58,25 @@ class OrderProductRepository extends ServiceEntityRepository
         ->getQuery()
         ->getSingleScalarResult();
     }
+
+    public function getOrderIdsHavingProducts($products)
+    {
+        return $this->createQueryBuilder('op')
+        ->select('DISTINCT op.order_id')
+        ->where('op.product_id IN (:products)')
+        ->setParameter('products', $products)
+        ->getQuery()
+        ->getResult();
+    }
+
+    public function getOrderProductsHavingProducts($orderId, $products)
+    {
+        return $this->createQueryBuilder('op')
+        ->andWhere('op.order_id = :orderId')
+        ->andWhere('op.product_id IN (:products)')
+        ->setParameter('orderId', $orderId)
+        ->setParameter('products', $products)
+        ->getQuery()
+        ->getResult();
+    }
 }

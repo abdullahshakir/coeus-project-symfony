@@ -41,13 +41,5 @@ class OrderVoter extends Voter
                     return $user === $order->getUser();
             }
         }
-
-        if ($this->security->isGranted('ROLE_SELLER')) {
-            switch ($attribute) {
-                case self::SHOW:
-                case self::EDIT:
-                    return $user === $order->getSeller();
-            }
-        }
     }
 }

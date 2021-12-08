@@ -9,7 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Repository\OrderRepository;
+use App\Repository\OrderProductRepository;
 use App\Entity\Order;
+use App\Entity\OrderProduct;
 use App\Form\SellerOrderType;
 
 /**
@@ -21,19 +23,19 @@ class OrderController extends AbstractController
      * @Route("/", name="seller_order_index", methods={"GET"}, host="seller.%domain%")
      * @IsGranted("ROLE_SELLER")
      */
-    public function index(OrderRepository $orderRepository): Response
+    public function index(OrderRepository $orderRepository, OrderProductRepository $orderProductRepository): Response
     {
+        $productIds = $this->getUser()->getProductIds();
+        $orderIds = $orderProductRepository->getOrderIdsHavingProducts($productIds);
+
         return $this->render('seller/order/index.html.twig', [
-            'orders' => $orderRepository->findBy([
-                'seller_id' => $this->getUser()->getId()
-            ]),
+            'orders' => $orderRepository->findByIn('id', $orderIds),
         ]);
     }
 
     /**
      * @Route("/{id}", name="order_show", methods={"GET"}, host="seller.%domain%")
      * @IsGranted("ROLE_SELLER")
-     * @IsGranted("show", subject="order")
      */
     public function show(Order $order): Response
     {
@@ -45,14 +47,45 @@ class OrderController extends AbstractController
     /**
      * @Route("/{id}/edit", name="seller_order_edit", methods={"GET","POST"}, host="seller.%domain%")
      * @IsGranted("ROLE_SELLER")
-     * @IsGranted("edit", subject="order")
      */
-    public function edit(Request $request, Order $order, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Order $order, EntityManagerInterface $entityManager, OrderProductRepository $orderProductRepository): Response
     {
         $form = $this->createForm(SellerOrderType::class, $order);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $status = $form->get('status')->getData();
+
+            if ($order->getStatus() === 'new' && $status === 'inprogress') {
+                $order->setStatus('inprogress');
+
+                $productIds = $this->getUser()->getProductIds();
+                $orderProducts = $orderProductRepository->getOrderProductsHavingProducts($order->getId(), $productIds);
+
+                foreach ($orderProducts as $orderProduct) {
+                    $orderProduct->setStatus(OrderProduct::STATUS_INPROGRESS);
+                }
+            } else if ($order->getStatus() === 'inprogress' && $status === 'delivered') {
+                $productIds = $this->getUser()->getProductIds();
+                $orderProducts = $orderProductRepository->getOrderProductsHavingProducts($order->getId(), $productIds);
+
+                foreach ($orderProducts as $orderProduct) {
+                    $orderProduct->setStatus(OrderProduct::STATUS_COMPLETE);
+                }
+
+                $allOrderProducts = $orderProductRepository->findBy(['order_id' => $order->getId()]);
+                $allDelivered = true;
+                foreach ($allOrderProducts as $singleOrderProduct) {
+                    if ($singleOrderProduct->getStatus() !== OrderProduct::STATUS_COMPLETE) {
+                        $allDelivered = false;
+                        break;
+                    }
+                }
+                if ($allDelivered) {
+                    $order->setStatus('delivered');
+                }
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('seller_order_index', [], Response::HTTP_SEE_OTHER);

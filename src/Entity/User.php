@@ -316,4 +316,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return round($totalRating/$count, 1);
     }
 
+    public function getProductIds()
+    {
+        $products = $this->getProducts();
+        $productIds = [];
+
+        foreach ($products as $product) {
+            $productIds[] = $product->getId();
+        } 
+        
+        return $productIds;
+    }
+
 }
