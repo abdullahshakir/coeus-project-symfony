@@ -98,7 +98,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/", name="orders_history", methods={"GET"}, host="buyer.%domain%")
+     * @Route("/history", name="orders_history", methods={"GET"}, host="buyer.%domain%")
      * @IsGranted("ROLE_BUYER")
      */
     public function buyerOrdersIndex(OrderRepository $orderRepository): Response
