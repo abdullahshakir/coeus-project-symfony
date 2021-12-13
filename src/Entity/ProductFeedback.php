@@ -42,6 +42,11 @@ class ProductFeedback
      */
     private $createdAt;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="productFeedback")
+     */
+    private $reviewOrder;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +108,18 @@ class ProductFeedback
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getReviewOrder(): ?Order
+    {
+        return $this->reviewOrder;
+    }
+
+    public function setReviewOrder(?Order $reviewOrder): self
+    {
+        $this->reviewOrder = $reviewOrder;
 
         return $this;
     }

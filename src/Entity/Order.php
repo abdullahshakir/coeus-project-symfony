@@ -50,12 +50,29 @@ class Order
      */
     private $updatedAt;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $token;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserFeedback::class, mappedBy="reviewOrder")
+     */
+    private $userFeedback;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ProductFeedback::class, mappedBy="reviewOrder")
+     */
+    private $productFeedback;
+
     const STATUS_CART = 'cart';
     const STATUS_NEW = 'new';
 
     public function __construct()
     {
         $this->orderProducts = new ArrayCollection();
+        $this->userFeedback = new ArrayCollection();
+        $this->productFeedback = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -187,6 +204,128 @@ class Order
     public function setUpdatedAt(\DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    public function getReviewedUserIds()
+    {
+        $reviewedUsers = $this->getUserFeedback();
+        $reviewedUserIds = [];
+
+        foreach ($reviewedUsers as $reviewedUser) {
+            $reviewedUserIds[] = $reviewedUser->getUserId();
+        } 
+        
+        return $reviewedUserIds;
+    }
+
+    public function getReviewedProductIds()
+    {
+        $reviewedProducts = $this->getProductFeedback();
+        $reviewedProductIds = [];
+
+        foreach ($reviewedProducts as $reviewedProduct) {
+            $reviewedProductIds[] = $reviewedProduct->getProductId();
+        } 
+        
+        return $reviewedProductIds;
+    }
+
+    public function getSellers()
+    {
+        $orderProducts = $this->getOrderProducts();
+        $sellerIds = [];
+
+        foreach ($orderProducts as $orderProduct) {
+            if (!in_array($orderProduct->getProduct()->getUserId(), $sellerIds)) {
+                $sellerIds[] = $orderProduct->getProduct()->getUserId();
+            }
+        } 
+        
+        return $sellerIds;
+    }
+
+    public function getOrderProductsIds()
+    {
+        $orderProducts = $this->getOrderProducts();
+        $orderProductsIds = [];
+
+        foreach ($orderProducts as $orderProduct) {
+            $orderProductsIds[] = $orderProduct->getProductId();
+        } 
+        
+        return $orderProductsIds;
+    }
+
+    /**
+     * @return Collection|UserFeedback[]
+     */
+    public function getUserFeedback(): Collection
+    {
+        return $this->userFeedback;
+    }
+
+    public function addUserFeedback(UserFeedback $userFeedback): self
+    {
+        if (!$this->userFeedback->contains($userFeedback)) {
+            $this->userFeedback[] = $userFeedback;
+            $userFeedback->setReviewOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserFeedback(UserFeedback $userFeedback): self
+    {
+        if ($this->userFeedback->removeElement($userFeedback)) {
+            // set the owning side to null (unless already changed)
+            if ($userFeedback->getReviewOrder() === $this) {
+                $userFeedback->setReviewOrder(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ProductFeedback[]
+     */
+    public function getProductFeedback(): Collection
+    {
+        return $this->productFeedback;
+    }
+
+    public function addProductFeedback(ProductFeedback $productFeedback): self
+    {
+        if (!$this->productFeedback->contains($productFeedback)) {
+            $this->productFeedback[] = $productFeedback;
+            $productFeedback->setReviewOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductFeedback(ProductFeedback $productFeedback): self
+    {
+        if ($this->productFeedback->removeElement($productFeedback)) {
+            // set the owning side to null (unless already changed)
+            if ($productFeedback->getReviewOrder() === $this) {
+                $productFeedback->setReviewOrder(null);
+            }
+        }
 
         return $this;
     }

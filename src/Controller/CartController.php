@@ -10,6 +10,9 @@ use App\Form\CartType;
 use App\Form\PlaceOrderType;
 use App\Manager\CartManager;
 use App\Entity\Order;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Uid\Uuid;
 
 class CartController extends AbstractController
 {
@@ -43,7 +46,7 @@ class CartController extends AbstractController
     /**
      * @Route("/cart/order", name="cart_order", methods={"POST"})
      */
-    public function placeOrder(Request $request, CartManager $cartManager): Response
+    public function placeOrder(Request $request, CartManager $cartManager, MailerInterface $mailer): Response
     {
         $authChecker = $this->get('security.authorization_checker');
         $isRoleBuyer = $authChecker->isGranted('ROLE_BUYER');
@@ -55,7 +58,19 @@ class CartController extends AbstractController
         $cart->setUser($this->getUser());
         $cart->setStatus(Order::STATUS_NEW);
         $cart->setUpdatedAt(new \DateTime());
+        $cart->setToken(Uuid::v4());
         $cartManager->save($cart);
+
+        $email = (new TemplatedEmail())
+        ->subject('Order Confirmation')
+        ->from('noreply@coeusexpress.wip')
+        ->to($this->getUser()->getEmail())
+        ->context([
+            'cart' => $cart
+        ])
+        ->htmlTemplate('email/order-confirmation.html.twig');
+
+        $mailer->send($email);
         
         return $this->redirectToRoute('buyer_homepage');
     }
