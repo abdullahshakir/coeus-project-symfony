@@ -26,17 +26,19 @@ class ProductReviewController extends AbstractController
         $form->handleRequest($request);
 
         $errors = [];
+        $orderProduct = null;
         $order = $orderRepository->findOneBy([
             'token' => $token
         ]);
 
         if (!$order) {
             $errors['invalid_order_token'] = true;
+        } else {
+            $reviewedProducts = $order->getReviewedProductIds();
+            $orderProducts = $order->getOrderProductsIds();
+            $unReviewedProducts = array_diff($orderProducts, $reviewedProducts); 
+            $orderProduct = (!empty($unReviewedProducts)) ? $productRepository->find(current($unReviewedProducts)) : null;
         }
-
-        $reviewedProducts = $order->getReviewedProductIds();
-        $orderProducts = $order->getOrderProductsIds();
-        $unReviewedProducts = array_diff($orderProducts, $reviewedProducts); 
 
         if ($form->isSubmitted() && $form->isValid()) {
             $product = $productRepository->find($form->get('productId')->getData());
@@ -55,7 +57,7 @@ class ProductReviewController extends AbstractController
         return $this->render('buyer/product_review/index.html.twig', [
             'form' => $form->createView(),
             'order' => $order,
-            'orderProduct' => (!empty($unReviewedProducts)) ? $productRepository->find(current($unReviewedProducts)) : null,
+            'orderProduct' => $orderProduct,
             'errors' => $errors
         ]);
     }

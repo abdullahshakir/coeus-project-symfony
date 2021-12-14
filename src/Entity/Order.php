@@ -65,8 +65,14 @@ class Order
      */
     private $productFeedback;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isNotified = false;
+
     const STATUS_CART = 'cart';
     const STATUS_NEW = 'new';
+    const STATUS_DELIVERED = 'delivered';
 
     public function __construct()
     {
@@ -326,6 +332,18 @@ class Order
                 $productFeedback->setReviewOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsNotified(): ?bool
+    {
+        return $this->isNotified;
+    }
+
+    public function setIsNotified(bool $isNotified): self
+    {
+        $this->isNotified = $isNotified;
 
         return $this;
     }

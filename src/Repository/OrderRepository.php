@@ -61,6 +61,19 @@ class OrderRepository extends ServiceEntityRepository
         ;
     }
 
+
+    public function findNonNotifiedDeliveredOrders(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.status = :status')
+            ->andWhere('o.isNotified = :isNotified')
+            ->setParameter('status', Order::STATUS_DELIVERED)
+            ->setParameter('isNotified', false)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     public function findByIn($field, $value)
     {
         $qb = $this->createQueryBuilder('p');

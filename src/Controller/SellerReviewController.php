@@ -27,22 +27,25 @@ class SellerReviewController extends AbstractController
         $form->handleRequest($request);
 
         $errors = [];
+        $orderSeller = null;
         $order = $orderRepository->findOneBy([
             'token' => $token
         ]);
 
-        if (!$order) {
+        if (!isset($order)) {
             $errors['invalid_order_token'] = true;
-        }
+        } else {
+            $reviewedUsers = $order->getReviewedUserIds();
+            $orderSellers = $order->getSellers();
+            $unReviewedSellers = array_diff($orderSellers, $reviewedUsers); 
+            
+            if (empty($unReviewedSellers)) {
+                return $this->redirectToRoute('product_review', [
+                    'token' => $order->getToken()
+                ]);
+            }
 
-        $reviewedUsers = $order->getReviewedUserIds();
-        $orderSellers = $order->getSellers();
-        $unReviewedSellers = array_diff($orderSellers, $reviewedUsers); 
-        
-        if (empty($unReviewedSellers)) {
-            return $this->redirectToRoute('product_review', [
-                'token' => $order->getToken()
-            ]);
+            $orderSeller = (!empty($unReviewedSellers)) ? $userRepository->find(current($unReviewedSellers)) : null;
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -62,7 +65,7 @@ class SellerReviewController extends AbstractController
         return $this->render('buyer/seller_review/index.html.twig', [
             'form' => $form->createView(),
             'order' => $order,
-            'orderSeller' => (!empty($unReviewedSellers)) ? $userRepository->find(current($unReviewedSellers)) : null,
+            'orderSeller' => $orderSeller,
             'errors' => $errors
         ]);
     }
