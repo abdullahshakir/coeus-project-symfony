@@ -42,4 +42,21 @@ class HomepageController extends AbstractController
             'categories' => $categoryRepository->findAll()
         ]);
     }
+
+    /**
+     * @Route(
+     *     "/",
+     *     name="admin_homepage",
+     *     host="admin.{domain}",
+     *     defaults={"domain"="%domain%"},
+     *     requirements={"domain"="%domain%"}
+     * )
+     * 
+     */
+    public function adminHomepageAction(CategoryRepository $categoryRepository)
+    {
+        return $this->render('admin/dashboard.html.twig', [
+            'categories' => $categoryRepository->findAll()
+        ]);
+    }
 }

@@ -58,8 +58,10 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 
         if ($request->request->get('accountType') == 'buyer') {
             $redirectPath = 'buyer_homepage';
-        } else {
+        } else if ($request->request->get('accountType') == 'seller') {
             $redirectPath = 'seller_homepage';
+        } else if($request->request->get('accountType') == 'admin') {
+            $redirectPath = 'admin_homepage';
         }
         
         return new RedirectResponse($this->urlGenerator->generate($redirectPath));

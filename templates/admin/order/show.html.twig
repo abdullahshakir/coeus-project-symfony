@@ -1,0 +1,62 @@
+{% extends 'layouts/admin.base.html.twig' %}
+
+{% block title %}Order{% endblock %}
+
+{% block main %}
+<div class="col-sm-12">
+    <!-- Basic Form Inputs card start -->
+    <div class="card">
+        <div class="card-header">
+            <h5>Order</h5>
+        </div>
+        <div class="card-block">
+
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <td>{{ order.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Buyer Name</th>
+                        <td>{{ order.user.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>{{ order.status }}</td>
+                    </tr>
+                    <tr>
+                        <th>Created At</th>
+                        <td>{{ order.createdAt|date('F j, Y g:i a') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Products</th>
+                        <table class="table">
+                            <thead>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Image</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </thead>
+                            <tbody>
+                                {% for orderProduct in order.orderProducts %}
+                                {% if orderProduct.product.user == app.user %}
+                                <tr>
+                                    <td>{{ orderProduct.product.id }}</td>
+                                    <td>{{ orderProduct.product.name }}</td>
+                                    <td><a target="_blank" href="{{ asset(product_images_directory ~ orderProduct.product.imageLink) }}"><img style="height:50px;width:50px;" src={{ asset(product_images_directory ~ orderProduct.product.imageLink) }}/></a></td>
+                                    <td>{{ orderProduct.product.price }}</td>
+                                    <td>{{ orderProduct.quantity }}</td>
+                                    <td>{{ orderProduct.product.price * orderProduct.quantity }}</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                        </table>
+                    </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
