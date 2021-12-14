@@ -70,8 +70,14 @@ class Order
      */
     private $isNotified = false;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isConfirmed = false;
+
     const STATUS_CART = 'cart';
     const STATUS_NEW = 'new';
+    const STATUS_INPROGRESS = 'inprogress';
     const STATUS_DELIVERED = 'delivered';
 
     public function __construct()
@@ -344,6 +350,18 @@ class Order
     public function setIsNotified(bool $isNotified): self
     {
         $this->isNotified = $isNotified;
+
+        return $this;
+    }
+
+    public function getIsConfirmed(): ?bool
+    {
+        return $this->isConfirmed;
+    }
+
+    public function setIsConfirmed(bool $isConfirmed): self
+    {
+        $this->isConfirmed = $isConfirmed;
 
         return $this;
     }

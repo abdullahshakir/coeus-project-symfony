@@ -61,7 +61,6 @@ class OrderRepository extends ServiceEntityRepository
         ;
     }
 
-
     public function findNonNotifiedDeliveredOrders(): array
     {
         return $this->createQueryBuilder('o')
@@ -74,6 +73,17 @@ class OrderRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findConfirmedOrders(): array
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.status = :status')
+            ->andWhere('o.isConfirmed = :isConfirmed')
+            ->setParameter('status', Order::STATUS_INPROGRESS)
+            ->setParameter('isConfirmed', false)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     public function findByIn($field, $value)
     {
         $qb = $this->createQueryBuilder('p');
