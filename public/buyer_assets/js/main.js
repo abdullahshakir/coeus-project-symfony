@@ -470,8 +470,12 @@ Note: main.js, All Default Scripting Languages For This Theme Included In This F
  $(".qtybutton").on("click", function() {
     var $button = $(this);
     var oldValue = $button.parent().find("input").val();
+	var maxValue = $button.parent().find("input").attr('max');
     if ($button.hasClass('inc')) {
        var newVal = parseFloat(oldValue) + 1;
+	   if (newVal > maxValue) {
+		 var newVal = parseFloat(maxValue);
+	   }
     } else {
         // Don't allow decrementing below zero
        if (oldValue > 0) {

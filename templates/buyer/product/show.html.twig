@@ -21,7 +21,14 @@
             <div class="col-lg-7 col-md-6">
                 <div class="product-details-view-content sp-normal-content pt-60">
                     <div class="product-info">
-                        <h2>{{ product.name }}</h2>
+                        <h2>
+                            {{ product.name }}
+                            {% if product.quantity > 0 %}
+                                <span class="item-quantity" style="font-size: 15px;color:green;"><b>({{ product.quantity }}</b> items in stock)</span>
+                            {% else %}
+                                <span class="item-quantity" style="font-size: 15px;color:red;"><b>(Out of stock)</b></span>
+                            {%  endif %}
+                        </h2>
                         <span class="product-details-ref">{{ product.user.name }}</span>
                         <div class="rating-box pt-20">
                             <ul class="rating rating-with-review-item">
@@ -44,12 +51,22 @@
                                 <div class="quantity">
                                     {{ form_label(form.quantity) }}
                                     <div class="cart-plus-minus">
-                                        {{ form_widget(form.quantity, {
+                                        {{ form_widget(form.quantity, (product.quantity > 0) ? {
                                             'attr': {
                                                 'class': 'cart-plus-minus-box ' ~ (form.quantity.vars.valid ? '' : 'is-invalid'),
-                                                'value' : 1 
+                                                'value' : 1,
+                                                'max': (product.quantity),
+                                                'min': 1,
                                             }
-                                        }) }}
+                                        }: 
+                                        {
+                                            'attr': {
+                                                'class': 'cart-plus-minus-box ' ~ (form.quantity.vars.valid ? '' : 'is-invalid'),
+                                                'value' : 1,
+                                                'disabled': 'disabled'
+                                            }
+                                        }    
+                                        ) }}
                                         <div class="dec qtybutton"><i class="fa fa-angle-down"></i></div>
                                         <div class="inc qtybutton"><i class="fa fa-angle-up"></i></div>
                                         <div class="invalid-feedback">
@@ -57,7 +74,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                {{ form_widget(form.add, {'attr': {'class': 'add-to-cart'}}) }}
+                                {{ form_widget(form.add, (product.quantity > 0) ? {'attr': {'class': 'add-to-cart'}} : 
+                                {'attr': {'class': 'add-to-cart', 'disabled': 'disabled', 'style': 'background: #d9d4d4; cursor: not-allowed;'}} ) }}
                             {{ form_end(form) }}
                         </div>
                         <div class="product-additional-info">
@@ -137,4 +155,21 @@
             $('#feedbacks').DataTable();
         } );
     </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Chrome, Safari, Edge, Opera */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+        -moz-appearance: textfield;
+        }
+    </style>
 {% endblock %}

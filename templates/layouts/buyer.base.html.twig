@@ -8,6 +8,7 @@
         <title>{% block title %}{% endblock %}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% block stylesheets %}
         <!-- Favicon -->
         <link rel="shortcut icon" type="image/x-icon" href="{{ asset('buyer_assets/images/favicon.png') }}">
         <!-- Material Design Iconic Font-V2.2.0 -->
@@ -42,6 +43,7 @@
         <link rel="stylesheet" href="{{ asset('buyer_assets/css/responsive.css') }}">
         <!-- data table -->
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css">
+        {% endblock %}
         <!-- Modernizr js -->
         <script src="{{ asset('buyer_assets/js/vendor/modernizr-2.8.3.min.js') }}"></script>
     </head>
