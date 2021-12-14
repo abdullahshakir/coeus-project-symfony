@@ -29,6 +29,29 @@
             </li>
             <li class="pcoded-hasmenu">
                 <a href="javascript:void(0)" class="waves-effect waves-dark">
+                    <span class="pcoded-micon"><i class="ti-server"></i></span>
+                    <span class="pcoded-mtext"  data-i18n="nav.basic-components.main">Categories</span>
+                    <span class="pcoded-mcaret"></span>
+                </a>
+                <ul class="pcoded-submenu">
+                    <li>
+                        <a href="{{ path('admin_category_index') }}" class="waves-effect waves-dark">
+                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                            <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">List Categories</span>
+                            <span class="pcoded-mcaret"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('admin_category_new') }}" class="waves-effect waves-dark">
+                            <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
+                            <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">Add New Category</span>
+                            <span class="pcoded-mcaret"></span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="pcoded-hasmenu">
+                <a href="javascript:void(0)" class="waves-effect waves-dark">
                     <span class="pcoded-micon"><i class="ti-layout-grid2-alt"></i></span>
                     <span class="pcoded-mtext"  data-i18n="nav.basic-components.main">Products</span>
                     <span class="pcoded-mcaret"></span>
