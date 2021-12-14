@@ -12,7 +12,12 @@ use App\Repository\OrderRepository;
 use App\Repository\OrderProductRepository;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
+use App\Entity\Product;
 use App\Form\SellerOrderType;
+use App\Form\AdminOrderType;
+use App\Form\AddProductToOrderType;
+use App\Manager\CartManager;
+use Symfony\Component\Form\FormError;
 
 /**
  * @Route("/order")
@@ -26,7 +31,7 @@ class OrderController extends AbstractController
     public function index(OrderRepository $orderRepository, OrderProductRepository $orderProductRepository): Response
     {
         return $this->render('admin/order/index.html.twig', [
-            'orders' => $orderRepository->findAll(),
+            'orders' => $orderRepository->findByNot('status', Order::STATUS_CART),
         ]);
     }
 
@@ -47,40 +52,18 @@ class OrderController extends AbstractController
      */
     public function edit(Request $request, Order $order, EntityManagerInterface $entityManager, OrderProductRepository $orderProductRepository): Response
     {
-        $form = $this->createForm(SellerOrderType::class, $order);
+        $form = $this->createForm(AdminOrderType::class, $order);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $status = $form->get('status')->getData();
 
-            if ($order->getStatus() === 'new' && $status === 'inprogress') {
-                $order->setStatus('inprogress');
+            $order->setStatus($status);
+                
+            $orderProducts = $order->getOrderProducts();
 
-                $productIds = $this->getUser()->getProductIds();
-                $orderProducts = $orderProductRepository->getOrderProductsHavingProducts($order->getId(), $productIds);
-
-                foreach ($orderProducts as $orderProduct) {
-                    $orderProduct->setStatus(OrderProduct::STATUS_INPROGRESS);
-                }
-            } else if ($order->getStatus() === 'inprogress' && $status === 'delivered') {
-                $productIds = $this->getUser()->getProductIds();
-                $orderProducts = $orderProductRepository->getOrderProductsHavingProducts($order->getId(), $productIds);
-
-                foreach ($orderProducts as $orderProduct) {
-                    $orderProduct->setStatus(OrderProduct::STATUS_COMPLETE);
-                }
-
-                $allOrderProducts = $orderProductRepository->findBy(['order_id' => $order->getId()]);
-                $allDelivered = true;
-                foreach ($allOrderProducts as $singleOrderProduct) {
-                    if ($singleOrderProduct->getStatus() !== OrderProduct::STATUS_COMPLETE) {
-                        $allDelivered = false;
-                        break;
-                    }
-                }
-                if ($allDelivered) {
-                    $order->setStatus('delivered');
-                }
+            foreach ($orderProducts as $orderProduct) {
+                $orderProduct->setStatus($status);
             }
 
             $entityManager->flush();
@@ -91,6 +74,39 @@ class OrderController extends AbstractController
         return $this->renderForm('admin/order/edit.html.twig', [
             'order' => $order,
             'form' => $form,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/product", name="admin_product_add", methods={"GET","POST"}, host="admin.%domain%")
+     */
+    public function addProduct(Request $request, Order $order, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(AddProductToOrderType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $item = $form->getData();
+            $product = $item->getProduct();
+            if ($product->getQuantity() > 0 && $product->getQuantity() > $form->get('quantity')->getData()) {
+                $item->setProductOrder($order);
+                $order
+                    ->addOrderProduct($item)
+                    ->setCreatedAt(new \DateTime())
+                    ->setUpdatedAt(new \DateTime());
+    
+                $entityManager->persist($order);
+                $entityManager->flush();
+    
+                return $this->redirectToRoute('admin_order_edit', ['id' => $order->getId()]);
+            }
+            $form->get('quantity')->addError(new FormError('Invalid quantity! Must be in range 0 to '. $product->getQuantity()));
+        }
+
+        return $this->render('admin/order/product_add.html.twig', [
+            'order' => $order,
+            'form' => $form->createView()
         ]);
     }
 }

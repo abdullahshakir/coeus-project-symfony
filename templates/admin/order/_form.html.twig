@@ -1,4 +1,6 @@
 {{ form_start(form) }}
+    {% if (form.orderProducts.count > 0) %}
+
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Status</label>
         <div class="col-sm-10">
@@ -6,8 +8,73 @@
         </div>
     </div>
     <div class="form-group">
-        <button type="submit" class="btn btn-primary pull-right">
+        <button type="submit" class="btn btn-primary mb-4 pull-right">
             <i class="fa fa-btn"></i> {{ button_label|default('Save') }}
         </button>
     </div>
+    <div class="table-content table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="li-product-remove">Remove</th>
+                    <th class="li-product-thumbnail">Image</th>
+                    <th class="cart-product-name">Product</th>
+                    <th class="li-product-price">Unit Price</th>
+                    <th class="li-product-quantity">Quantity</th>
+                    <th class="li-product-subtotal">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for item in form.orderProducts %}
+                <tr>
+                    <td class="li-product-remove">{{ form_widget(item.remove, {'attr': {'class': 'btn btn-dark btn-sm', 'onclick': 'return confirm("Are you sure you want to remove the item?");'}}) }}</td>
+                    <td class="li-product-thumbnail"><a href="#"><img style="height: 100px; width:100px;" src="{{ asset(product_images_directory ~ item.vars.data.product.imageLink) }}" alt="product image"></a></td>
+                    <td class="li-product-name"><a href="#">{{ item.vars.data.product.name }}</a></td>
+                    <td class="li-product-price"><span class="amount">${{ item.vars.data.product.price }}</span></td>
+                    <td class="quantity">
+                        <div class="cart-plus-minus">
+                            {{ form_widget(item.quantity, {
+                                'attr': {
+                                    'type': 'number'
+                                }
+                            }) }}
+                            <div class="invalid-feedback">
+                                {{ form_errors(item.quantity) }}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="product-subtotal"><span class="amount">${{ item.vars.value.quantity * item.vars.data.product.price }}</span></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="coupon-all">
+                <div class="coupon2">
+                    <a href="{{ path('admin_product_add', {'id': order.id}) }}" class="btn btn-success">Add Product</a>
+                </div>
+                <div class="coupon2 pull-right">
+                    {{ form_widget(form.save, {'attr': {'class': 'btn btn-warning', 'onclick': 'return confirm("Are you sure you want to update the changes?");'}}) }}
+                    {{ form_widget(form.clear, {'attr': {'class': 'btn btn-light', 'onclick': 'return confirm("Are you sure you want to clear the order products?");'}}) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-5 ml-auto">
+            <div class="cart-page-total">
+                <h4>Order totals</h4>
+                <ul>
+                    <li>Total <span>${{ order.total }}</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+        <div> Order is empty </div>
+    {% endif %}
 {{ form_end(form) }}

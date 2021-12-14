@@ -84,10 +84,21 @@ class OrderRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
     public function findByIn($field, $value)
     {
         $qb = $this->createQueryBuilder('p');
         $qb->where($qb->expr()->In('p.'.$field, '?1'));
+        $qb->setParameter(1, $value);
+
+        return $qb->getQuery()
+            ->getResult();
+    }
+
+    public function findByNot($field, $value): array
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->where($qb->expr()->not($qb->expr()->eq('p.'.$field, '?1')));
         $qb->setParameter(1, $value);
 
         return $qb->getQuery()
