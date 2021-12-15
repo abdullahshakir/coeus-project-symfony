@@ -1,41 +1,20 @@
 {% extends 'layouts/admin.base.html.twig' %}
 
-{% block title %}Edit Profile{% endblock %}
+{% block title %}Edit User{% endblock %}
 
 {% block main %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-10 ml-md-auto">
-        {{ include('common/_flash_messages.html.twig') }}
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-10 ml-md-auto">
-      <div class="card bg-light mb-3 mt-5" style="width: 800px">
-        <div class="card-body">
-          <div class="card-header mb-3">Edit Profile</div>
-          {{ form_start(form) }}
-          <div class="form_group">
-            <div class="col-md-12 mb-3">
-              {{ form_row(form.name, {'attr': {'class': 'form-control'}}) }}
+<div class="row">
+    <div class="col-sm-12">
+        <!-- Basic Form Inputs card start -->
+        <div class="card">
+            <div class="card-header">
+                <h5>User</h5>
             </div>
-          </div>
-          <div class="form_group">
-            <div class="col-md-12 mb-3">
-              {{ form_row(form.email, {'attr': {'class': 'form-control'}}) }}
+            <div class="card-block">
+                <h4 class="sub-title">Edit User</h4>
+                {{ include('admin/user/_form.html.twig', {'button_label': 'Update'}) }}
             </div>
-          </div>
-          <div class="form-group">
-            <div class="text-center" style="margin-top:5px;">
-              <button type="submit" class="btn btn-primary">
-                <i class="fa fa-btn fa-edit"></i> Edit
-              </button>
-            </div>
-          </div>
-          {{ form_end(form) }}
         </div>
-      </div>
     </div>
-  </div>
 </div>
 {% endblock %}

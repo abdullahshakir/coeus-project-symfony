@@ -69,6 +69,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $userFeedback;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $status = self::STATUS_ACTIVE;
+
+    const STATUS_ACTIVE = 'active';
+    const STATUS_DISABLED = 'disabled';
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
@@ -326,6 +334,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         } 
         
         return $productIds;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
     }
 
 }
