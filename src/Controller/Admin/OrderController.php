@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Repository\OrderRepository;
+use App\Repository\ProductRepository;
 use App\Repository\OrderProductRepository;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
@@ -18,12 +19,26 @@ use App\Form\AdminOrderType;
 use App\Form\AddProductToOrderType;
 use App\Manager\CartManager;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @Route("/order")
  */
 class OrderController extends AbstractController
 {
+    private $requestStack;
+
+    public function __construct(RequestStack $requestStack)
+    {
+        $this->requestStack = $requestStack;
+    }
+
+    private function getSession(): SessionInterface
+    {
+        return $this->requestStack->getSession();
+    }
+
     /**
      * @Route("/", name="admin_order_index", methods={"GET"}, host="admin.%domain%")
      * @IsGranted("ROLE_ADMIN")
@@ -50,20 +65,50 @@ class OrderController extends AbstractController
      * @Route("/{id}/edit", name="admin_order_edit", methods={"GET","POST"}, host="admin.%domain%")
      * @IsGranted("ROLE_ADMIN")
      */
-    public function edit(Request $request, Order $order, EntityManagerInterface $entityManager, OrderProductRepository $orderProductRepository): Response
+    public function edit(Request $request, Order $order, EntityManagerInterface $entityManager, OrderProductRepository $orderProductRepository, ProductRepository $productRepository): Response
     {
+        if (null == $this->getSession()->get('clonedOrder')) {
+            $this->getSession()->set('clonedOrder', $order);
+        }
+        
         $form = $this->createForm(AdminOrderType::class, $order);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $status = $form->get('status')->getData();
+            $clonedOrder = $this->getSession()->get('clonedOrder');
+            $this->getSession()->remove('clonedOrder');
+            $updatedOrderProducts = $form->get('orderProducts')->getData()->toArray();
 
-            $order->setStatus($status);
+            if (isset($status)) {
+                $order->setStatus($status);
                 
-            $orderProducts = $order->getOrderProducts();
-
-            foreach ($orderProducts as $orderProduct) {
-                $orderProduct->setStatus($status);
+                $orderProducts = $order->getOrderProducts();
+    
+                foreach ($orderProducts as $orderProduct) {
+                    $orderProduct->setStatus($status);
+                }
+            }
+            
+            foreach ($updatedOrderProducts as $updatedOrderProduct) {
+                $orderProduct = $clonedOrder->exists($updatedOrderProduct);
+                if (isset($orderProduct)) {
+                    $quantityDiff = $updatedOrderProduct->getQuantity() - $orderProduct->getQuantity();
+                    $product = $updatedOrderProduct->getProduct();
+                    $product->setQuantity($orderProduct->getProduct()->getQuantity() - $quantityDiff);
+                    $entityManager->persist($product);
+                } else {
+                    $product = $updatedOrderProduct->getProduct();
+                    $product->setQuantity($updatedOrderProduct->getProduct()->getQuantity() - $updatedOrderProduct->getQuantity());
+                    $entityManager->persist($product);
+                }
+            }
+            foreach ($clonedOrder->getOrderProducts() as $clonedProduct) {
+                if (null == $order->exists($clonedProduct)) {
+                    $removedProduct = $productRepository->find($clonedProduct->getProduct()->getId());
+                    $removedProduct->setQuantity($clonedProduct->getProduct()->getQuantity() + $clonedProduct->getQuantity());
+                    // dd($removedProduct);
+                    $entityManager->persist($removedProduct);
+                }
             }
 
             $entityManager->flush();

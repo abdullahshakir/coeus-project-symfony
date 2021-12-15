@@ -92,6 +92,13 @@ class Order
         return $this->id;
     }
 
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getUserId(): ?int
     {
         return $this->user_id;
@@ -364,6 +371,17 @@ class Order
         $this->isConfirmed = $isConfirmed;
 
         return $this;
+    }
+
+    public function exists(OrderProduct $product)
+    {
+        $orderProducts = $this->getOrderProducts();
+        foreach ($orderProducts as $orderProduct) {
+            if ($orderProduct->getId() == $product->getId()) {
+                return $orderProduct;
+            }
+        }
+        return null;
     }
 
 }
