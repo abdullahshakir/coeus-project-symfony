@@ -6,6 +6,7 @@ use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class CategoryType extends AbstractType
 {
@@ -14,6 +15,13 @@ class CategoryType extends AbstractType
         $builder
             ->add('name', null, [
                 'label' => false
+            ])
+            ->add('status', ChoiceType::class, [
+                'choices'  => [
+                    'Active' => Category::STATUS_ACTIVE,
+                    'Disabled' => Category::STATUS_DISABLED,
+                ],
+                'label' => false,
             ])
         ;
     }

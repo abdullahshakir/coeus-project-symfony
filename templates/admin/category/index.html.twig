@@ -17,6 +17,7 @@
                         <tr>
                             <th>Id</th>
                             <th>Name</th>
+                            <th>Status</th>
                             <th>actions</th>
                         </tr>
                     </thead>
@@ -25,10 +26,10 @@
                         <tr>
                             <td>{{ category.id }}</td>
                             <td>{{ category.name }}</td>
+                            <td>{{ category.status }}</td>
                             <td>
                                 <a class="btn btn-success" href="{{ path('admin_category_show', {'id': category.id}) }}">show</a>
                                 <a class="btn btn-primary" href="{{ path('admin_category_edit', {'id': category.id}) }}">edit</a>
-                                {{ include('admin/category/_delete_form.html.twig') }}
                             </td>
                         </tr>
                         {% else %}
