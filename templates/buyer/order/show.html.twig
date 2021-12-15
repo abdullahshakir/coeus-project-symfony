@@ -51,7 +51,7 @@
                                                 <td><a target="_blank" href="{{ asset(product_images_directory ~ orderProduct.product.imageLink) }}"><img style="height:50px;width:50px;" src={{ asset(product_images_directory ~ orderProduct.product.imageLink) }}/></a></td>
                                                 <td>${{ orderProduct.product.price }}</td>
                                                 <td>{{ orderProduct.quantity }}</td>
-                                                <td>{{ orderProduct.product.price * orderProduct.quantity }}</td>
+                                                <td>${{ orderProduct.product.price * orderProduct.quantity }}</td>
                                             </tr>
                                             {% endfor %}
                                     </table>
