@@ -29,7 +29,7 @@ class OrderController extends AbstractController
         $orderIds = $orderProductRepository->getOrderIdsHavingProducts($productIds);
 
         return $this->render('seller/order/index.html.twig', [
-            'orders' => $orderRepository->findByIn('id', $orderIds),
+            'orders' => $orderRepository->getSellerSpecificOrders($orderIds),
         ]);
     }
 
