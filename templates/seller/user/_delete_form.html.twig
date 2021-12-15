@@ -1,0 +1,4 @@
+<form style="display:inline;" method="post" action="{{ path('user_cancel') }}" onsubmit="return confirm('Are you sure you want to cancel the account?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ app.user.id) }}">
+    <button class="btn btn-danger pull-right">Cancel Account</button>
+</form>

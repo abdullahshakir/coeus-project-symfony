@@ -348,4 +348,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function isCancelled()
+    {
+        return $this->status === User::STATUS_DISABLED;
+    }
+
 }
