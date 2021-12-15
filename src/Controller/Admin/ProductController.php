@@ -140,19 +140,4 @@ class ProductController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    /**
-     * @Route("/{id}", name="admin_product_delete", methods={"POST"}, host="admin.%domain%")
-     * @IsGranted("ROLE_ADMIN")
-     */
-    public function delete(Request $request, Product $product, EntityManagerInterface $entityManager, Filesystem $filesystem): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
-            $filesystem->remove($this->getParameter('product_images_directory'). '/' .$product->getImageLink());
-            $entityManager->remove($product);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('admin_product_index', [], Response::HTTP_SEE_OTHER);
-    }
 }
