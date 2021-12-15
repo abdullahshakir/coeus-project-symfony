@@ -74,6 +74,14 @@ class Product
      */
     private $productFeedback;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $status = self::STATUS_ACTIVE;
+
+    const STATUS_ACTIVE = 'active';
+    const STATUS_DISABLED = 'disabled';
+
     public function __construct()
     {
         $this->orderProducts = new ArrayCollection();
@@ -269,5 +277,17 @@ class Product
         }
 
         return round($totalRating/$count, 1);
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
     }
 }
