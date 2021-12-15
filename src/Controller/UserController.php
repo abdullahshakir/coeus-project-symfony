@@ -19,7 +19,7 @@ use App\Entity\User;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/edit", methods="GET|POST", name="buyer_edit")
+     * @Route("/edit", methods="GET|POST", name="buyer_edit", host="buyer.%domain%")
      */
     public function buyerEdit(Request $request): Response
     {
@@ -43,7 +43,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/edit", methods="GET|POST", name="seller_edit")
+     * @Route("/edit", methods="GET|POST", name="seller_edit", host="seller.%domain%")
      */
     public function sellerEdit(Request $request): Response
     {
