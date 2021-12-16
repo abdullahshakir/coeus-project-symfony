@@ -50,10 +50,6 @@ class OrderConfirmedCommand extends Command
     {
         $orders = $this->orderRepository->findConfirmedOrders();
 
-        $context = $this->router->getContext();
-        $context->setHost('coeusexpress.wip');
-        $context->setScheme('https');
-
         foreach ($orders as $order) {
             $user = $order->getUser();
             $this->mailService->sendMail([
