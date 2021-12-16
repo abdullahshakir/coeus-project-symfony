@@ -16,17 +16,24 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class ProductReviewController extends AbstractController
 {
+    private $productRepository;
+
+    public function __construct(ProductRepository $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
+
     /**
      * @Route("/{token}", name="product_review", methods={"GET","POST"}, host="buyer.%domain%")
      */
-    public function index(Request $request, string $token, EntityManagerInterface $entityManager, OrderRepository $orderRepository, ProductRepository $productRepository): Response
+    public function index(Request $request, string $token, EntityManagerInterface $entityManager, OrderRepository $orderRepository): Response
     {
         $productFeedback = new ProductFeedback();
         $form = $this->createForm(ProductFeedbackType::class, $productFeedback);
         $form->handleRequest($request);
 
         $errors = [];
-        $orderProduct = null;
+        $unreviewedProduct = null;
         $order = $orderRepository->findOneBy([
             'token' => $token
         ]);
@@ -34,14 +41,11 @@ class ProductReviewController extends AbstractController
         if (!$order) {
             $errors['invalid_order_token'] = true;
         } else {
-            $reviewedProducts = $order->getReviewedProductIds();
-            $orderProducts = $order->getOrderProductsIds();
-            $unReviewedProducts = array_diff($orderProducts, $reviewedProducts); 
-            $orderProduct = (!empty($unReviewedProducts)) ? $productRepository->find(current($unReviewedProducts)) : null;
+            $unreviewedProduct = $this->get_unreviewed_products($order);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $product = $productRepository->find($form->get('productId')->getData());
+            $product = $this->productRepository->find($form->get('productId')->getData());
             $productFeedback->setProduct($product);
             $productFeedback->setCreatedAt(new \DateTimeImmutable());
             $productFeedback->setReviewOrder($order);
@@ -57,8 +61,16 @@ class ProductReviewController extends AbstractController
         return $this->render('buyer/product_review/index.html.twig', [
             'form' => $form->createView(),
             'order' => $order,
-            'orderProduct' => $orderProduct,
+            'unreviewedProduct' => $unreviewedProduct,
             'errors' => $errors
         ]);
+    }
+
+    private function get_unreviewed_products($order)
+    {
+        $reviewedProductIds = $order->getReviewedProductIds();
+        $orderProductIds = $order->getOrderProductsIds();
+        $unReviewedProductIds = array_diff($orderProductIds, $reviewedProductIds); 
+        return (!empty($unReviewedProductIds)) ? $this->productRepository->find(current($unReviewedProductIds)) : null;
     }
 }
