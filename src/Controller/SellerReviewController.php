@@ -29,6 +29,12 @@ class SellerReviewController extends AbstractController
     }
     
     /**
+     * Seller Review
+     * 
+     * @param Request $request
+     * @param string $token
+     * @return Response
+     * 
      * @Route("/{token}", name="seller_review", methods={"GET","POST"}, host="buyer.%domain%")
      */
     public function index(Request $request, string $token): Response
