@@ -22,6 +22,11 @@ class MailService
             ->to($params['to'])
             ->context($params['context'] ?? [])
             ->htmlTemplate($params['template']);
-        $this->mailer->send($email);
+        
+        try {
+            $this->mailer->send($email);
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 }

@@ -48,23 +48,28 @@ class OrderConfirmedCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
         $orders = $this->orderRepository->findConfirmedOrders();
 
         foreach ($orders as $order) {
             $user = $order->getUser();
-            $this->mailService->sendMail([
-                'subject' => 'Order Confirmed',
-                'from' => 'noreply@coeusexpress.wip',
-                'to' => $user->getEmail(),
-                'context' => [
-                    'user' => $user,
-                    'cart' => $order
-                ],
-                'template' => 'email/order-confirmation.html.twig'
-            ]);
-            $order->setIsConfirmed(true);
-            $this->entityManager->flush();
-            $this->entityManager->clear();
+            try {
+                $this->mailService->sendMail([
+                    'subject' => 'Order Confirmed',
+                    'from' => 'noreply@coeusexpress.wip',
+                    'to' => $user->getEmail(),
+                    'context' => [
+                        'user' => $user,
+                        'cart' => $order
+                    ],
+                    'template' => 'email/order-confirmation.html.twig'
+                ]);
+                $order->setIsConfirmed(true);
+                $this->entityManager->flush();
+                $this->entityManager->clear();
+            } catch (\Exception $e) {
+                $io->error('Unable to send mail!');
+            }
         }
         
         return Command::SUCCESS;
