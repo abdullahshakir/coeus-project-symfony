@@ -24,9 +24,9 @@
                         <h2>
                             {{ product.name }}
                             {% if product.quantity > 0 %}
-                                <span class="item-quantity" style="font-size: 15px;color:green;"><b>({{ product.quantity }}</b> items in stock)</span>
+                                <span class="item-quantity-available"><b>({{ product.quantity }}</b> items in stock)</span>
                             {% else %}
-                                <span class="item-quantity" style="font-size: 15px;color:red;"><b>(Out of stock)</b></span>
+                                <span class="item-quantity-unavailable"><b>(Out of stock)</b></span>
                             {%  endif %}
                         </h2>
                         <span class="product-details-ref">{{ product.user.name }}</span>
