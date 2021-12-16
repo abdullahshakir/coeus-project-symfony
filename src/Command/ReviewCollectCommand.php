@@ -48,27 +48,34 @@ class ReviewCollectCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new SymfonyStyle($input, $output);
         $orders = $this->orderRepository->findNonNotifiedDeliveredOrders();
 
-        $context = $this->router->getContext();
-        $context->setHost('coeusexpress.wip');
-        $context->setScheme('https');
+        if (count($orders) == 0) {
+            $io->info('No Non notified delivered orders.');
+            return Command::SUCCESS;
+        }
 
         foreach ($orders as $order) {
             $user = $order->getUser();
-            $this->mailService->sendMail([
-                'subject' => 'Order Delivered',
-                'from' => 'noreply@coeusexpress.wip',
-                'to' => $user->getEmail(),
-                'context' => [
-                    'user' => $user,
-                    'reviewUrl' => $this->router->generate('seller_review', ['token' => $order->getToken()])
-                ],
-                'template' => 'email/order-review.html.twig'
-            ]);
-            $order->setIsNotified(true);
-            $this->entityManager->flush();
-            $this->entityManager->clear();
+            try {
+                $this->mailService->sendMail([
+                    'subject' => 'Order Delivered',
+                    'from' => 'noreply@coeusexpress.wip',
+                    'to' => $user->getEmail(),
+                    'context' => [
+                        'user' => $user,
+                        'reviewUrl' => $this->router->generate('seller_review', ['token' => $order->getToken()])
+                    ],
+                    'template' => 'email/order-review.html.twig'
+                ]);
+                $order->setIsNotified(true);
+                $this->entityManager->flush();
+                $this->entityManager->clear();
+            } catch (\Exception $e) {
+                $io->error('Unable to send mail!');
+                return Command::FAILURE;
+            }
         }
         
         return Command::SUCCESS;
