@@ -187,11 +187,6 @@ Note: main.js, All Default Scripting Languages For This Theme Included In This F
 	    if ( screenSize <= 991) {
 	        $('#cate-toggle .right-menu > a').prepend('<i class="expand menu-expand"></i>');
 	        $('.category-menu .right-menu ul').slideUp();
-	//        $('.category-menu .menu-item-has-children i').on('click', function(e){
-	//            e.preventDefault();
-	//            $(this).toggleClass('expand');
-	//            $(this).siblings('ul').css('transition', 'none').slideToggle();
-	//        })
 	    } else {
 	        $('.category-menu .right-menu > a i').remove();
 	        $('.category-menu .right-menu ul').slideDown();
@@ -472,18 +467,18 @@ Note: main.js, All Default Scripting Languages For This Theme Included In This F
     var oldValue = $button.parent().find("input").val();
 	var maxValue = $button.parent().find("input").attr('max');
     if ($button.hasClass('inc')) {
-       var newVal = parseFloat(oldValue) + 1;
-	   if (newVal > maxValue) {
-		 var newVal = parseFloat(maxValue);
-	   }
-    } else {
+    	var newVal = parseFloat(oldValue) + 1;
+		if (newVal > maxValue) {
+			var newVal = parseFloat(maxValue);
+		}
+	} else {
         // Don't allow decrementing below zero
-       if (oldValue > 0) {
-         var newVal = parseFloat(oldValue) - 1;
-         } else {
-         newVal = 0;
-       }
-       }
+       	if (oldValue > 0) {
+         	var newVal = parseFloat(oldValue) - 1;
+        } else {
+         	newVal = 0;
+       	}
+    }
     $button.parent().find("input").val(newVal);
    });
 /*----------------------------------------*/
