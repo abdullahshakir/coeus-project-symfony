@@ -51,6 +51,11 @@ class OrderConfirmedCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $orders = $this->orderRepository->findConfirmedOrders();
 
+        if (count($orders) == 0) {
+            $io->info('No confirmed orders.');
+            return Command::SUCCESS;
+        }
+
         foreach ($orders as $order) {
             $user = $order->getUser();
             try {
@@ -69,6 +74,7 @@ class OrderConfirmedCommand extends Command
                 $this->entityManager->clear();
             } catch (\Exception $e) {
                 $io->error('Unable to send mail!');
+                return Command::FAILURE;
             }
         }
         
