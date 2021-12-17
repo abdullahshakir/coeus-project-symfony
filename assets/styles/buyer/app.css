@@ -1,0 +1,10 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import '~material-design-iconic-font/dist/css/material-design-iconic-font.min.css';
+@import '~font-awesome';
+@import './owl.carousel.min.css';
+@import './fontawesome-stars.css';
+@import './nice-select.css';
+@import './helper.css';
+@import './style.css';
+@import './responsive.css';
+@import './datatables.bootstrap4.min.css';

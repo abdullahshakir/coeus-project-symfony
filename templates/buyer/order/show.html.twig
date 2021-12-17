@@ -70,9 +70,5 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script>
-        $(document).ready(function() {
-            $('#order-products').DataTable();
-        } );
-    </script>
+    {{ encore_entry_script_tags('order_show') }}
 {% endblock %}
