@@ -9,18 +9,14 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Repository\OrderRepository;
-use App\Repository\ProductRepository;
 use App\Repository\OrderProductRepository;
 use App\Entity\Order;
-use App\Entity\OrderProduct;
-use App\Entity\Product;
-use App\Form\SellerOrderType;
 use App\Form\AdminOrderType;
 use App\Form\AddProductToOrderType;
-use App\Manager\CartManager;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Service\OrderService;
 
 /**
  * @Route("/order")
@@ -28,10 +24,12 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class OrderController extends AbstractController
 {
     private $requestStack;
+    private $service;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, OrderService $service)
     {
         $this->requestStack = $requestStack;
+        $this->service = $service;
     }
 
     private function getSession(): SessionInterface
@@ -65,7 +63,7 @@ class OrderController extends AbstractController
      * @Route("/{id}/edit", name="admin_order_edit", methods={"GET","POST"}, host="admin.%domain%")
      * @IsGranted("ROLE_ADMIN")
      */
-    public function edit(Request $request, Order $order, EntityManagerInterface $entityManager, OrderProductRepository $orderProductRepository, ProductRepository $productRepository): Response
+    public function edit(Request $request, Order $order): Response
     {
         if (null == $this->getSession()->get('clonedOrder')) {
             $this->getSession()->set('clonedOrder', $order);
@@ -79,40 +77,8 @@ class OrderController extends AbstractController
             $this->getSession()->remove('clonedOrder');
             $updatedOrderProducts = $form->get('orderProducts')->getData()->toArray();
             $status = $form->get('status')->getData();
-
-            if (isset($status)) {
-                $order->setStatus($status);
-                
-                $orderProducts = $order->getOrderProducts();
-    
-                foreach ($orderProducts as $orderProduct) {
-                    $orderProduct->setStatus($status);
-                }
-            }
             
-            foreach ($updatedOrderProducts as $updatedOrderProduct) {
-                $orderProduct = $clonedOrder->exists($updatedOrderProduct);
-                if (isset($orderProduct)) {
-                    $quantityDiff = $updatedOrderProduct->getQuantity() - $orderProduct->getQuantity();
-                    $product = $updatedOrderProduct->getProduct();
-                    $product->setQuantity($orderProduct->getProduct()->getQuantity() - $quantityDiff);
-                    $entityManager->persist($product);
-                } else {
-                    $product = $updatedOrderProduct->getProduct();
-                    $product->setQuantity($updatedOrderProduct->getProduct()->getQuantity() - $updatedOrderProduct->getQuantity());
-                    $entityManager->persist($product);
-                }
-            }
-            foreach ($clonedOrder->getOrderProducts() as $clonedProduct) {
-                if (null == $order->exists($clonedProduct)) {
-                    $removedProduct = $productRepository->find($clonedProduct->getProduct()->getId());
-                    $removedProduct->setQuantity($clonedProduct->getProduct()->getQuantity() + $clonedProduct->getQuantity());
-                    // dd($removedProduct);
-                    $entityManager->persist($removedProduct);
-                }
-            }
-
-            $entityManager->flush();
+            $this->service->editOrder($status, $order, $clonedOrder, $updatedOrderProducts);
 
             return $this->redirectToRoute('admin_order_index', [], Response::HTTP_SEE_OTHER);
         }
