@@ -62,7 +62,7 @@ class ProductController extends AbstractController
 
                     $product->setImageLink($newFilename);
                 } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+                    throw $e;
                 }
                 
                 unset($file);
@@ -124,7 +124,7 @@ class ProductController extends AbstractController
 
                     $product->setImageLink($newFilename);
                 } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+                    throw $e;
                 }
                 
                 unset($file);
