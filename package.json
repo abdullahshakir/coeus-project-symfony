@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "bootstrap": "^4.0.0",
+        "datatables.net-bs4": "^1.11.3",
         "font-awesome": "^4.7.0",
         "jquery": "^1.12.4",
         "material-design-iconic-font": "^2.2.0",
