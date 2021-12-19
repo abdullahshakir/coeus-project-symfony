@@ -78,6 +78,7 @@ class OrderController extends AbstractController
             $clonedOrder = $this->getSession()->get('clonedOrder');
             $this->getSession()->remove('clonedOrder');
             $updatedOrderProducts = $form->get('orderProducts')->getData()->toArray();
+            $status = $form->get('status')->getData();
 
             if (isset($status)) {
                 $order->setStatus($status);
