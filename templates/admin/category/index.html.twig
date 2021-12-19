@@ -48,9 +48,5 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script>
-        $(document).ready(function() {
-            $('#categories').DataTable();
-        } );
-    </script>
+    {{ encore_entry_script_tags('admin_list_categories') }}
 {% endblock %}

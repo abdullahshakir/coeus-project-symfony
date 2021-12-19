@@ -30,6 +30,13 @@ Encore
     .addEntry('list_feedback', './assets/scripts/seller/list_feedback.js')
     .addEntry('product_feedbacks', './assets/scripts/seller/product_feedbacks.js')
 
+    .addEntry('admin_list_orders', './assets/scripts/admin/admin_list_orders.js')
+    .addEntry('admin_list_products', './assets/scripts/admin/admin_list_products.js')
+    .addEntry('admin_list_feedback', './assets/scripts/admin/admin_list_feedback.js')
+    .addEntry('admin_product_feedback', './assets/scripts/admin/admin_product_feedback.js')
+    .addEntry('admin_list_users', './assets/scripts/admin/admin_list_users.js')
+    .addEntry('admin_list_categories', './assets/scripts/admin/admin_list_categories.js')
+
     // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
     .enableStimulusBridge('./assets/controllers.json')
 

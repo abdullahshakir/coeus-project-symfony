@@ -46,9 +46,5 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script>
-        $(document).ready(function() {
-            $('#feedbacks').DataTable();
-        } );
-    </script>
+    {{ encore_entry_script_tags('admin_list_feedback') }}
 {% endblock %}

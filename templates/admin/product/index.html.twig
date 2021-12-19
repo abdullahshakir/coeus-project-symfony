@@ -58,9 +58,5 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script>
-        $(document).ready(function() {
-            $('#products').DataTable();
-        } );
-    </script>
+    {{ encore_entry_script_tags('admin_list_products') }}
 {% endblock %}
