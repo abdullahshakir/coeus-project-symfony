@@ -1,2 +1,5 @@
 # translations/messages.en.yaml
 user.updated_successfully: Profile updated successfully!
+seller.dashboard.title: Dashboard
+seller.dashboard.heading: Dashboard
+seller.dashboard.subheading: Welcome to Coeus Express

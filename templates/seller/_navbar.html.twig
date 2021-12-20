@@ -44,9 +44,19 @@
                 </li>
             </ul>
             <ul class="nav-right">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown-language" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ app.request.locale|locale_name(app.request.locale) }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-language">
+                        <a class="dropdown-item text-dark" href="{{ path('seller_homepage', {_locale: 'en'}) }}">English</a>
+                        <a class="dropdown-item text-dark" href="{{ path('seller_homepage', {_locale: 'de'}) }}">Deutsch</a>
+                    </div>
+                </li>
                 <li class="user-profile header-notification">
                     <a href="#!" class="waves-effect waves-light">
-                        <img src="{{ asset('seller_assets/images/avatar-4.jpg') }}" class="img-radius" alt="User-Profile-Image">
+                        <img src="{{ asset('build/seller_images/avatar-4.jpg') }}" class="img-radius" alt="User-Profile-Image">
                         <span>{{ app.user.name }}</span>
                         <i class="ti-angle-down"></i>
                     </a>

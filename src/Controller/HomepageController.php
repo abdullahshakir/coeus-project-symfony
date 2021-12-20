@@ -13,11 +13,11 @@ class HomepageController extends AbstractController
 {
     /**
      * @Route(
-     *     "/",
+     *     "/{_locale}/",
      *     name="seller_homepage",
      *     host="seller.{domain}",
      *     defaults={"domain"="%domain%"},
-     *     requirements={"domain"="%domain%"}
+     *     requirements={"domain"="%domain%", "_locale": "en|de"}
      * )
      * @IsGranted("ROLE_SELLER")
      */

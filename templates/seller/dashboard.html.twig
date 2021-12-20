@@ -1,6 +1,6 @@
 {% extends 'layouts/seller.base.html.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}{{ 'seller.dashboard.title'|trans }}{% endblock %}
 
 {% block page_header %}
 <div class="page-header">
@@ -8,8 +8,8 @@
         <div class="row align-items-center">
             <div class="col-md-8">
                 <div class="page-header-title">
-                    <h5 class="m-b-10">Dashboard</h5>
-                    <p class="m-b-0">Welcome to Coeus Express</p>
+                    <h5 class="m-b-10"> {{ 'seller.dashboard.heading'|trans }}</h5>
+                    <p class="m-b-0">{{ 'seller.dashboard.subheading'|trans }}</p>
                 </div>
             </div>
             <div class="col-md-4">
@@ -17,7 +17,7 @@
                     <li class="breadcrumb-item">
                         <a href="#"> <i class="fa fa-home"></i> </a>
                     </li>
-                    <li class="breadcrumb-item"><a href="#!">Dashboard</a>
+                    <li class="breadcrumb-item"><a href="#!">{{ 'seller.dashboard.heading'|trans }}</a>
                     </li>
                 </ul>
             </div>
