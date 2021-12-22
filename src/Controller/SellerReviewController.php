@@ -17,56 +17,83 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class SellerReviewController extends AbstractController
 {
+    private $entityManager;
+    private $userRepository;
+    private $orderRepository;
+
+    public function __construct(EntityManagerInterface $entityManager, UserRepository $userRepository, OrderRepository $orderRepository)
+    {
+        $this->entityManager = $entityManager;
+        $this->userRepository = $userRepository;
+        $this->orderRepository = $orderRepository;
+    }
+    
     /**
+     * Seller Review
+     * 
+     * @param Request $request
+     * @param string $token
+     * @return Response
+     * 
      * @Route("/{token}", name="seller_review", methods={"GET","POST"}, host="buyer.%domain%")
      */
-    public function index(Request $request, string $token, EntityManagerInterface $entityManager, OrderRepository $orderRepository, UserRepository $userRepository): Response
+    public function index(Request $request, string $token): Response
     {
         $userFeedback = new UserFeedback();
         $form = $this->createForm(UserFeedbackType::class, $userFeedback);
         $form->handleRequest($request);
 
         $errors = [];
-        $orderSeller = null;
-        $order = $orderRepository->findOneBy([
+        $unReviewedSeller = null;
+        $order = $this->orderRepository->findOneBy([
             'token' => $token
         ]);
 
         if (!isset($order)) {
             $errors['invalid_order_token'] = true;
         } else {
-            $reviewedUsers = $order->getReviewedUserIds();
-            $orderSellers = $order->getSellers();
-            $unReviewedSellers = array_diff($orderSellers, $reviewedUsers); 
-            
-            if (empty($unReviewedSellers)) {
+            $unReviewedSeller = $this->get_unreviewed_seller($order);
+            if (null == $unReviewedSeller) {
                 return $this->redirectToRoute('product_review', [
                     'token' => $order->getToken()
                 ]);
             }
-
-            $orderSeller = (!empty($unReviewedSellers)) ? $userRepository->find(current($unReviewedSellers)) : null;
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $seller = $userRepository->find($form->get('userId')->getData());
-            $userFeedback->setUser($seller);
-            $userFeedback->setCreatedAt(new \DateTimeImmutable());
-            $userFeedback->setReviewOrder($order);
 
-            $entityManager->persist($userFeedback);
-            $entityManager->flush();
-
+            $this->save_seller_feedback($form, $userFeedback, $order);
+            
             return $this->redirectToRoute('seller_review', [
                 'token' => $order->getToken()
             ]);
-        }   
+        }
 
         return $this->render('buyer/seller_review/index.html.twig', [
             'form' => $form->createView(),
             'order' => $order,
-            'orderSeller' => $orderSeller,
+            'unReviewedSeller' => $unReviewedSeller,
             'errors' => $errors
         ]);
+    }
+
+    private function get_unreviewed_seller($order)
+    {
+        $reviewedUserIds = $order->getReviewedUserIds();
+        $orderSellerIds = $order->getSellers();
+        $unReviewedSellerIds = array_diff($orderSellerIds, $reviewedUserIds); 
+        
+        return (!empty($unReviewedSellerIds)) ? $this->userRepository->find(current($unReviewedSellerIds)) : null;
+    }
+
+    private function save_seller_feedback($form, $userFeedback, $order)
+    {
+        $seller = $this->userRepository->find($form->get('userId')->getData());
+        $userFeedback->setUser($seller);
+        $userFeedback->setCreatedAt(new \DateTimeImmutable());
+        $userFeedback->setReviewOrder($order);
+
+        $this->entityManager->persist($userFeedback);
+        $this->entityManager->flush();
     }
 }

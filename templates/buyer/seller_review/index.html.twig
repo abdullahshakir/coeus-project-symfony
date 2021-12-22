@@ -9,7 +9,7 @@
             <div class="col-sm-12">
                 {% if errors and errors.invalid_order_token %}
                     <h3 class="review-page-title text-center mb-3">Invalid Link!</h3>
-                {% elseif orderSeller is null %}
+                {% elseif unReviewedSeller is null %}
                     <h3 class="review-page-title text-center mb-3">Feedback submission completed!</h3>
                 {% else %}
                 <!-- Basic Form Inputs card start -->
@@ -18,7 +18,7 @@
                     <div class="modal-inner-area row">
                         <div class="col-lg-6">
                             <div class="li-review-product">
-                                <h3> {{ orderSeller.name }} </h3>
+                                <h3> {{ unReviewedSeller.name }} </h3>
                             </div>
                         </div>
                         <div class="col-lg-6">
@@ -40,7 +40,7 @@
                                             </p>
                                             <div class="feedback-input">
                                                 <div class="feedback-btn pb-15">
-                                                {{ form_widget(form.userId, {'attr': {'value': orderSeller.id}}) }}
+                                                {{ form_widget(form.userId, {'attr': {'value': unReviewedSeller.id}}) }}
                                                 {{ form_widget(form.save, {'attr': {'class': 'btn btn-warning'}}) }}
                                                 </div>
                                             </div>
