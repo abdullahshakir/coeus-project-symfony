@@ -21,8 +21,6 @@ class OrderVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [self::SHOW, self::EDIT], true)
             && $subject instanceof \App\Entity\Order;
     }

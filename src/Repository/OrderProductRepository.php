@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use App\Entity\OrderProduct;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,35 +19,6 @@ class OrderProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, OrderProduct::class);
     }
-
-    // /**
-    //  * @return OrderProduct[] Returns an array of OrderProduct objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('o.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?OrderProduct
-    {
-        return $this->createQueryBuilder('o')
-            ->andWhere('o.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 
     public function getTotalSales(Product $product)
     {
