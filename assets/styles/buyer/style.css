@@ -780,6 +780,14 @@ textarea:focus {
 	padding: 0 0 85px;
 	position: relative;
 }
+.item-quantity-available {
+	font-size: 15px;
+	color:green;
+}
+.item-quantity-unavailable {
+	font-size: 15px;
+	color:red;
+}
 /*Special Product Active Box Shadow*/
 .special-product-active {
 	padding: 0;

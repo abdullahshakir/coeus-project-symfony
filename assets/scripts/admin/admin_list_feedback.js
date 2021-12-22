@@ -1,8 +1,9 @@
 import $ from 'jquery';
-import './jquery-ui.min.js';
+global.jQuery = $;
+global.$ = $;
 import 'bootstrap';
 import 'datatables.net-bs4';
 
 $(document).ready(function () {
-    $('#order-products').DataTable();
+    $('#feedbacks').DataTable();
 });

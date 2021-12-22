@@ -23,7 +23,6 @@ class AdminOrderType extends AbstractType
                     'In Progress' => 'inprogress',
                     'Delivered' => 'delivered',
                 ],
-                'mapped' => false,
             ])
             ->add('orderProducts', CollectionType::class, [
                 'entry_type' => CartProductType::class

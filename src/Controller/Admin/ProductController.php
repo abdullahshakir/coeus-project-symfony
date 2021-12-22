@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Filesystem\Filesystem;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Manager\CartManager;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
  * @Route("/product")
@@ -62,7 +63,7 @@ class ProductController extends AbstractController
 
                     $product->setImageLink($newFilename);
                 } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+                    throw $e;
                 }
                 
                 unset($file);
@@ -124,7 +125,7 @@ class ProductController extends AbstractController
 
                     $product->setImageLink($newFilename);
                 } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+                    throw $e;
                 }
                 
                 unset($file);

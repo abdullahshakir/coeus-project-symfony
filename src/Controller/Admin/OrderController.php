@@ -11,19 +11,32 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Repository\OrderRepository;
 use App\Repository\OrderProductRepository;
 use App\Entity\Order;
-use App\Entity\OrderProduct;
-use App\Entity\Product;
-use App\Form\SellerOrderType;
 use App\Form\AdminOrderType;
 use App\Form\AddProductToOrderType;
-use App\Manager\CartManager;
 use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Service\OrderService;
 
 /**
  * @Route("/order")
  */
 class OrderController extends AbstractController
 {
+    private $requestStack;
+    private $service;
+
+    public function __construct(RequestStack $requestStack, OrderService $service)
+    {
+        $this->requestStack = $requestStack;
+        $this->service = $service;
+    }
+
+    private function getSession(): SessionInterface
+    {
+        return $this->requestStack->getSession();
+    }
+
     /**
      * @Route("/", name="admin_order_index", methods={"GET"}, host="admin.%domain%")
      * @IsGranted("ROLE_ADMIN")
@@ -50,23 +63,22 @@ class OrderController extends AbstractController
      * @Route("/{id}/edit", name="admin_order_edit", methods={"GET","POST"}, host="admin.%domain%")
      * @IsGranted("ROLE_ADMIN")
      */
-    public function edit(Request $request, Order $order, EntityManagerInterface $entityManager, OrderProductRepository $orderProductRepository): Response
+    public function edit(Request $request, Order $order): Response
     {
+        if (null == $this->getSession()->get('clonedOrder')) {
+            $this->getSession()->set('clonedOrder', $order);
+        }
+        
         $form = $this->createForm(AdminOrderType::class, $order);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $clonedOrder = $this->getSession()->get('clonedOrder');
+            $this->getSession()->remove('clonedOrder');
+            $updatedOrderProducts = $form->get('orderProducts')->getData()->toArray();
             $status = $form->get('status')->getData();
-
-            $order->setStatus($status);
-                
-            $orderProducts = $order->getOrderProducts();
-
-            foreach ($orderProducts as $orderProduct) {
-                $orderProduct->setStatus($status);
-            }
-
-            $entityManager->flush();
+            
+            $this->service->editOrder($status, $order, $clonedOrder, $updatedOrderProducts);
 
             return $this->redirectToRoute('admin_order_index', [], Response::HTTP_SEE_OTHER);
         }

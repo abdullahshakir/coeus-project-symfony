@@ -17,6 +17,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Filesystem\Filesystem;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Manager\CartManager;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Psr\Log\LoggerInterface;
 
 /**
  * @Route("/product")
@@ -37,7 +39,7 @@ class ProductController extends AbstractController
     /**
      * @Route("/new", name="product_new", methods={"GET","POST"}, host="seller.%domain%")
      */
-    public function new(Request $request, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, CategoryRepository $categoryRepository, LoggerInterface $logger): Response
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class, $product);
@@ -63,13 +65,16 @@ class ProductController extends AbstractController
 
                     $product->setImageLink($newFilename);
                 } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+                    $logger->error(sprintf('%s:%s', get_class($e), $e->getMessage()));
+                    throw $e;
                 }
                 
                 unset($file);
             } else {
                 $product->setImageLink('default_product.png');
             }
+
+            $logger->info(sprintf('New product %s added.', $product->getName()));
 
             $entityManager->persist($product);
             $entityManager->flush();
@@ -125,7 +130,7 @@ class ProductController extends AbstractController
 
                     $product->setImageLink($newFilename);
                 } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
+                    throw $e;
                 }
                 
                 unset($file);
