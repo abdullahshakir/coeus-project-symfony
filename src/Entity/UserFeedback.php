@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Repository\UserFeedbackRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
