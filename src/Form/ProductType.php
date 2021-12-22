@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\ChoiceList\ChoiceList;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class ProductType extends AbstractType
 {
@@ -42,6 +43,13 @@ class ProductType extends AbstractType
                 'mapped' => false,
                 'data_class' => null,
                 'required' => false,
+                'label' => false,
+            ])
+            ->add('status', ChoiceType::class, [
+                'choices'  => [
+                    'Active' => Product::STATUS_ACTIVE,
+                    'Disabled' => Product::STATUS_DISABLED,
+                ],
                 'label' => false,
             ])
         ;

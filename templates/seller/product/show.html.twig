@@ -68,9 +68,5 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script>
-        $(document).ready(function() {
-            $('#feedback').DataTable();
-        } );
-    </script>
+    {{ encore_entry_script_tags('product_feedbacks') }}
 {% endblock %}

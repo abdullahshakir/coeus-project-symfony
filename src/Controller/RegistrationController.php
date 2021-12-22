@@ -48,6 +48,8 @@ class RegistrationController extends AbstractController
             // Set their roles
             $user->setRoles($roles);
 
+            $user->setStatus(User::STATUS_ACTIVE);
+
             // Save
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
