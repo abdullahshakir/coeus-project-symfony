@@ -14,6 +14,8 @@
         "doctrine/orm": "^2.10",
         "phpdocumentor/reflection-docblock": "^5.3",
         "sensio/framework-extra-bundle": "^6.1",
+        "sonata-project/admin-bundle": "^4.5",
+        "sonata-project/doctrine-orm-admin-bundle": "^4.2",
         "symfony/asset": "5.3.*",
         "symfony/console": "5.3.*",
         "symfony/dotenv": "5.3.*",
