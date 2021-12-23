@@ -20,6 +20,7 @@
                             <li><a href="{{ path('registration') }}">Register</a></li>
                             <li><a href="{{ path('app_login') }}">Login</a></li>
                         {% else %}
+                            <li><a href="{{ path('buyer_edit') }}">Profile</a></li>
                             <li><a href="{{ path('app_logout') }}">Logout</a></li>
                         {% endif %}
                         </ul>

@@ -75,4 +75,16 @@ class OrderRepository extends ServiceEntityRepository
         return $qb->getQuery()
             ->getResult();
     }
+
+    public function getSellerSpecificOrders($orderIds): array
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->andWhere($qb->expr()->In('p.id', '?1'));
+        $qb->andWhere($qb->expr()->not($qb->expr()->eq('p.status', '?2')));
+        $qb->setParameter(1, $orderIds);
+        $qb->setParameter(2, Order::STATUS_CART);
+
+        return $qb->getQuery()
+            ->getResult();
+    }
 }
