@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\OrderProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\Validator\Constraints as Assert;
