@@ -12,11 +12,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Controller\API\User\UserUpdateAction;
 
 /**
  * @ApiResource(
  *      itemOperations={
- *          "get"
+ *          "get", 
+ *          "put"={
+ *              "normalization_context"={
+ *                  "groups"={"put"}
+ *              },
+ *              "controller"=UserUpdateAction::class
+ *          }
  *      },
  *      collectionOperations={},
  *      normalizationContext={
@@ -41,6 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\NotBlank()
      * @Groups({"read"})
+     * @Groups({"put"})
      */
     private $email;
 
@@ -53,6 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
+     * @Groups({"put"})
      */
     private $password;
 
@@ -60,6 +69,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      * @Groups({"read"})
+     * @Groups({"put"})
      */
     private $name;
 
@@ -86,6 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"read"})
+     * @Groups({"put"})
      */
     private $status = self::STATUS_ACTIVE;
 
