@@ -6,8 +6,29 @@ use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 /**
+ * @ApiFilter(
+ *      SearchFilter::class,
+ *      properties={
+ *          "user_id": "exact",
+ *      }
+ * )
+ * @ApiResource(
+ *      collectionOperations={
+ *          "get",
+ *      },
+ *      itemOperations={
+ *          "get"
+ *      },
+ *      normalizationContext={
+ *          "groups"={"product:read"}
+ *      }
+ * )
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  */
 class Product
@@ -16,26 +37,31 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"product:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"product:read"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read"})
      */
     private $image_link;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"read", "write"})
      */
     private $category_id;
 
@@ -46,6 +72,7 @@ class Product
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products")
+     * @Groups({"product:read"})
      */
     private $category;
 
@@ -61,11 +88,13 @@ class Product
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"product:read"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="bigint")
+     * @Groups({"product:read"})
      */
     private $quantity;
 
@@ -76,6 +105,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read"})
      */
     private $status = self::STATUS_ACTIVE;
 
