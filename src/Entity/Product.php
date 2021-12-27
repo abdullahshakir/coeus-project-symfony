@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\API\Product\ProductAddAction;
+use App\Controller\API\Product\ProductEditAction;
 
 /**
  * @ApiFilter(
@@ -28,7 +29,9 @@ use App\Controller\API\Product\ProductAddAction;
  *      },
  *      itemOperations={
  *          "get",
- *          "put",
+ *          "put"={
+ *              "controller"=ProductEditAction::class
+ *          },
  *          "delete"
  *      },
  *      normalizationContext={
