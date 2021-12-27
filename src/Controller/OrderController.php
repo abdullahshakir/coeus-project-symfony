@@ -105,7 +105,7 @@ class OrderController extends AbstractController
     {
         return $this->render('buyer/order/index.html.twig', [
             'orders' => $orderRepository->findBy([
-                'user_id' => $this->getUser()->getId()
+                'userId' => $this->getUser()->getId()
             ]),
         ]);
     }

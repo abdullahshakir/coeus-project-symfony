@@ -21,7 +21,7 @@ class FeedbackController extends AbstractController
     {
         return $this->render('seller/feedback/index.html.twig', [
             'feedbacks' => $userFeedbackRepository->findBy([
-                'user_id' => $this->getUser()->getId()
+                'userId' => $this->getUser()->getId()
             ]),
             'averageFeedback' => round($userFeedbackRepository->getAverageRating($this->getUser()), 1),
         ]);

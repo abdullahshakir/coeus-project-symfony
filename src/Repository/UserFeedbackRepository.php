@@ -24,7 +24,7 @@ class UserFeedbackRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('uf')
         ->select('avg(uf.rating) as averageRating')
-        ->where('uf.user_id = :userId')
+        ->where('uf.userId = :userId')
         ->setParameter('userId', $user->getId())
         ->getQuery()
         ->getSingleScalarResult();
