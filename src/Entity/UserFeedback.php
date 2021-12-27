@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\API\Review\Seller\SellerReviewAddAction;
+use App\Controller\API\Review\Seller\SellerReviewTopRatedAction;
 
 /**
  * @ApiFilter(
@@ -22,6 +23,11 @@ use App\Controller\API\Review\Seller\SellerReviewAddAction;
  *          "get",
  *          "post"={
  *              "controller"=SellerReviewAddAction::class
+ *          },
+ *          "gettoprated"={
+ *              "method"="GET",
+ *              "path"="/user_feedbacks/toprated",
+ *              "controller"=SellerReviewTopRatedAction::class
  *          }
  *      },
  *      itemOperations={

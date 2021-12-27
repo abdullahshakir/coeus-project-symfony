@@ -6,6 +6,7 @@ use App\Entity\UserFeedback;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * @method UserFeedback|null find($id, $lockMode = null, $lockVersion = null)
@@ -28,5 +29,19 @@ class UserFeedbackRepository extends ServiceEntityRepository
         ->setParameter('userId', $user->getId())
         ->getQuery()
         ->getSingleScalarResult();
+    }
+
+    public function findTopRatedSellerFeedbacks()
+    {
+        $queryBuilder = $this->createQueryBuilder('uf')
+            ->select('uf')
+            ->orderBy('uf.rating', 'DESC')
+        ;
+        $criteria = Criteria::create()
+            ->setFirstResult(0)
+            ->setMaxResults(5);
+        $queryBuilder->addCriteria($criteria);
+
+        return $queryBuilder->getQuery()->getResult();
     }
 }
