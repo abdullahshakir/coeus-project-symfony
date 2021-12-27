@@ -27,7 +27,7 @@ class OrderProduct
     /**
      * @ORM\Column(type="integer")
      */
-    private $product_id;
+    private $productId;
 
     /**
      * @ORM\Column(type="float")
@@ -75,12 +75,12 @@ class OrderProduct
 
     public function getProductId(): ?int
     {
-        return $this->product_id;
+        return $this->productId;
     }
 
-    public function setProductId(int $product_id): self
+    public function setProductId(int $productId): self
     {
-        $this->product_id = $product_id;
+        $this->productId = $productId;
 
         return $this;
     }

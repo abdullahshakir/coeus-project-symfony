@@ -6,6 +6,7 @@ use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
@@ -17,13 +18,14 @@ class Order
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"productfeedback:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $user_id;
+    private $userId;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="orders")
@@ -32,11 +34,13 @@ class Order
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"productfeedback:read"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"productfeedback:read"})
      */
     private $status = self::STATUS_CART;
 
@@ -47,6 +51,7 @@ class Order
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"productfeedback:read"})
      */
     private $updatedAt;
 
@@ -101,12 +106,12 @@ class Order
 
     public function getUserId(): ?int
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
-    public function setUserId(int $user_id): self
+    public function setUserId(int $userId): self
     {
-        $this->user_id = $user_id;
+        $this->userId = $userId;
 
         return $this;
     }

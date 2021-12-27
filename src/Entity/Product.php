@@ -6,6 +6,7 @@ use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -16,21 +17,25 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"productfeedback:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"productfeedback:read"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"productfeedback:read"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"productfeedback:read"})
      */
     private $image_link;
 
@@ -42,7 +47,7 @@ class Product
     /**
      * @ORM\Column(type="integer")
      */
-    private $user_id;
+    private $userId;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products")
@@ -61,11 +66,13 @@ class Product
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"productfeedback:read"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="bigint")
+     * @Groups({"productfeedback:read"})
      */
     private $quantity;
 
@@ -76,6 +83,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"productfeedback:read"})
      */
     private $status = self::STATUS_ACTIVE;
 
@@ -143,12 +151,12 @@ class Product
 
     public function getUserId(): ?int
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
-    public function setUserId(int $user_id): self
+    public function setUserId(int $userId): self
     {
-        $this->user_id = $user_id;
+        $this->userId = $userId;
 
         return $this;
     }
