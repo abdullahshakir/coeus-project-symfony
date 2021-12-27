@@ -30,6 +30,11 @@ class ProductAddAction extends AbstractController
         $this->validator->validate($data);
 
         $category = $this->categoryRepository->find($data->getCategoryId());
+
+        if (!$category) {
+            throw new \Exception('Invalid categoryId');
+        }
+
         $data->setCategory($category);
         $data->setUser($this->tokenStorage->getToken()->getUser());
         $this->entityManager->flush();
