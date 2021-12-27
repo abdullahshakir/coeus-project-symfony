@@ -6,8 +6,47 @@ use App\Repository\ProductRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\API\Product\ProductAddAction;
+use App\Controller\API\Product\ProductEditAction;
+use App\Controller\API\Product\ProductMostPopularAction;
 
 /**
+ * @ApiFilter(
+ *      SearchFilter::class,
+ *      properties={
+ *          "userId": "exact",
+ *      }
+ * )
+ * @ApiResource(
+ *      collectionOperations={
+ *          "get",
+ *          "post"={
+ *              "controller"=ProductAddAction::class
+ *          },
+ *          "getmostpopular"={
+ *              "method"="GET",
+ *              "path"="/most-popular-products",
+ *              "controller"=ProductMostPopularAction::class
+ *          }
+ *      },
+ *      itemOperations={
+ *          "get",
+ *          "put"={
+ *              "controller"=ProductEditAction::class
+ *          },
+ *          "delete"
+ *      },
+ *      normalizationContext={
+ *          "groups"={"product:read"}
+ *      },
+ *      denormalizationContext={
+ *          "groups"={"product:write"}
+ *      }
+ * )
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  */
 class Product
@@ -16,36 +55,42 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"product:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read", "product:write"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"product:read", "product:write"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read", "product:write"})
      */
-    private $image_link;
+    private $imageLink;
+
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"read", "product:write"})
+     */
+    private $categoryId;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $category_id;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $user_id;
+    private $userId;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products")
+     * @Groups({"product:read"})
      */
     private $category;
 
@@ -61,11 +106,13 @@ class Product
 
     /**
      * @ORM\Column(type="float")
+     * @Groups({"product:read", "product:write"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="bigint")
+     * @Groups({"product:read", "product:write"})
      */
     private $quantity;
 
@@ -76,6 +123,7 @@ class Product
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"product:read", "product:write"})
      */
     private $status = self::STATUS_ACTIVE;
 
@@ -119,36 +167,36 @@ class Product
 
     public function getImageLink(): ?string
     {
-        return $this->image_link;
+        return $this->imageLink;
     }
 
-    public function setImageLink(string $image_link): self
+    public function setImageLink(string $imageLink): self
     {
-        $this->image_link = $image_link;
+        $this->imageLink = $imageLink;
 
         return $this;
     }
 
     public function getCategoryId(): ?int
     {
-        return $this->category_id;
+        return $this->categoryId;
     }
 
-    public function setCategoryId(int $category_id): self
+    public function setCategoryId(int $categoryId): self
     {
-        $this->category_id = $category_id;
+        $this->categoryId = $categoryId;
 
         return $this;
     }
 
     public function getUserId(): ?int
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
-    public function setUserId(int $user_id): self
+    public function setUserId(int $userId): self
     {
-        $this->user_id = $user_id;
+        $this->userId = $userId;
 
         return $this;
     }

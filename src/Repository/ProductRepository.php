@@ -18,4 +18,14 @@ class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
+
+    public function findByIn($field, $value)
+    {
+        $qb = $this->createQueryBuilder('p');
+        $qb->where($qb->expr()->In('p.'.$field, '?1'));
+        $qb->setParameter(1, $value);
+
+        return $qb->getQuery()
+            ->getResult();
+    }
 }
