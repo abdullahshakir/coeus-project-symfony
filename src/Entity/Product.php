@@ -12,6 +12,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\API\Product\ProductAddAction;
 use App\Controller\API\Product\ProductEditAction;
+use App\Controller\API\Product\ProductMostPopularAction;
 
 /**
  * @ApiFilter(
@@ -25,6 +26,11 @@ use App\Controller\API\Product\ProductEditAction;
  *          "get",
  *          "post"={
  *              "controller"=ProductAddAction::class
+ *          },
+ *          "getmostpopular"={
+ *              "method"="GET",
+ *              "path"="/most-popular-products",
+ *              "controller"=ProductMostPopularAction::class
  *          }
  *      },
  *      itemOperations={
