@@ -4,8 +4,36 @@ namespace App\Entity;
 
 use App\Repository\ProductFeedbackRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Controller\API\Review\Product\ProductReviewAddAction;
 
 /**
+ * @ApiFilter(
+ *      SearchFilter::class,
+ *      properties={
+ *          "productId": "exact",
+ *      }
+ * )
+ * @ApiResource(
+ *      collectionOperations={
+ *          "get",
+ *          "post"={
+ *              "controller"=ProductReviewAddAction::class
+ *          }
+ *      },
+ *      itemOperations={
+ *          "get"
+ *      },
+ *      normalizationContext={
+ *          "groups"={"productfeedback:read"}
+ *      },
+ *      denormalizationContext={
+ *          "groups"={"productfeedback:write"}
+ *      }
+ * )
  * @ORM\Entity(repositoryClass=ProductFeedbackRepository::class)
  */
 class ProductFeedback
@@ -14,26 +42,31 @@ class ProductFeedback
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"productfeedback:read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="text")
+     * @Groups({"productfeedback:read", "productfeedback:write"})
      */
     private $message;
 
     /**
      * @ORM\Column(type="smallint")
+     * @Groups({"productfeedback:read", "productfeedback:write"})
      */
     private $rating;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"productfeedback:read", "productfeedback:write"})
      */
-    private $product_id;
+    private $productId;
 
     /**
      * @ORM\ManyToOne(targetEntity=Product::class, inversedBy="productFeedback")
+     * @Groups({"productfeedback:read"})
      */
     private $product;
 
@@ -44,8 +77,14 @@ class ProductFeedback
 
     /**
      * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="productFeedback")
+     * @Groups({"productfeedback:read"})
      */
     private $reviewOrder;
+
+    /**
+     * @Groups({"productfeedback:write"})
+     */
+    private $reviewOrderId;
 
     public function getId(): ?int
     {
@@ -78,12 +117,12 @@ class ProductFeedback
 
     public function getProductId(): ?int
     {
-        return $this->product_id;
+        return $this->productId;
     }
 
-    public function setProductId(int $product_id): self
+    public function setProductId(int $productId): self
     {
-        $this->product_id = $product_id;
+        $this->productId = $productId;
 
         return $this;
     }
@@ -122,5 +161,17 @@ class ProductFeedback
         $this->reviewOrder = $reviewOrder;
 
         return $this;
+    }
+
+    public function setReviewOrderId(int $reviewOrderId): self
+    {
+        $this->reviewOrderId = $reviewOrderId;
+
+        return $this;
+    }
+
+    public function getReviewOrderId(): ?int
+    {
+        return $this->reviewOrderId;
     }
 }

@@ -24,7 +24,7 @@ class OrderProductRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('op')
         ->select('sum(op.quantity) as totalSales')
-        ->where('op.product_id = :productId')
+        ->where('op.productId = :productId')
         ->setParameter('productId', $product->getId())
         ->getQuery()
         ->getSingleScalarResult();
@@ -34,7 +34,7 @@ class OrderProductRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('op')
         ->select('DISTINCT op.order_id')
-        ->where('op.product_id IN (:products)')
+        ->where('op.productId IN (:products)')
         ->setParameter('products', $products)
         ->getQuery()
         ->getResult();
@@ -44,7 +44,7 @@ class OrderProductRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('op')
         ->andWhere('op.order_id = :orderId')
-        ->andWhere('op.product_id IN (:products)')
+        ->andWhere('op.productId IN (:products)')
         ->setParameter('orderId', $orderId)
         ->setParameter('products', $products)
         ->getQuery()

@@ -91,7 +91,7 @@ class ProductController extends AbstractController
             'product' => $product,
             'data' => [
                 'totalSales' => $orderProductRepository->getTotalSales($product),
-                'feedback' => $productFeedbackRepository->findBy(['product_id' => $product->getId()]),
+                'feedback' => $productFeedbackRepository->findBy(['productId' => $product->getId()]),
             ]
         ]);
     }
