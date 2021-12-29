@@ -7,6 +7,7 @@ namespace App\Factory;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\Product;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * Class OrderFactory
@@ -25,7 +26,8 @@ class OrderFactory
         $order
             ->setStatus(Order::STATUS_CART)
             ->setCreatedAt(new \DateTime())
-            ->setUpdatedAt(new \DateTime());
+            ->setUpdatedAt(new \DateTime())
+            ->setToken(Uuid::v4());
 
         return $order;
     }

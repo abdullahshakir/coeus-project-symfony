@@ -1,0 +1,68 @@
+{% extends 'layouts/buyer.base.html.twig' %}
+
+{% block title %}Review{% endblock %}
+
+{% block main %}
+<div class="content-wraper">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                {% if errors and errors.invalid_order_token %}
+                    <h3 class="review-page-title text-center mb-3">Invalid Link!</h3>
+                {% elseif unreviewedProduct is null %}
+                    <h3 class="review-page-title text-center mb-3">Feedback submission completed!</h3>
+                {% else %}
+                <!-- Basic Form Inputs card start -->
+                <div class="modal-body">
+                    <h3 class="review-page-title">Write Your Review</h3>
+                    <div class="modal-inner-area row">
+                        <div class="col-lg-6">
+                            <div class="li-review-product">
+                                <h3> {{ unreviewedProduct.name }} </h3>
+                            </div>
+                            <div class="product-details-left">
+                                <div class="product-details-images slider-navigation-1">
+                                    <div class="lg-image" style="padding-top: 68px;">
+                                        <img src="{{ asset(product_images_directory ~ unreviewedProduct.imageLink) }}" alt="product image">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="li-review-content">
+                                <!-- Begin Feedback Area -->
+                                <div class="feedback-area">
+                                    <div class="feedback">
+                                        <h3 class="feedback-title">Product Feedback</h3>
+                                        {{ form_start(form) }}
+                                            <p class="your-opinion">
+                                                {{ form_label(form.rating) }}
+                                                <span>
+                                                    {{ form_widget(form.rating, {'attr': {'class': 'star-rating', 'min': '1', 'max': '5'}}) }}
+                                                </span>
+                                            </p>
+                                            <p class="feedback-form">
+                                                {{ form_label(form.message) }}
+                                                {{ form_widget(form.message, {'attr': {'cols': '45', 'rows':'8', 'aria-required':'true'}}) }}
+                                            </p>
+                                            <div class="feedback-input">
+                                                <div class="feedback-btn pb-15">
+                                                {{ form_widget(form.productId, {'attr': {'value': unreviewedProduct.id}}) }}
+                                                {{ form_widget(form.save, {'attr': {'class': 'btn btn-warning'}}) }}
+                                                </div>
+                                            </div>
+                                        {{ form_end(form) }}
+                                    </div>
+                                </div>
+                                <!-- Feedback Area End Here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

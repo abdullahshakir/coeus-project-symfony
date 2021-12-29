@@ -17,6 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Filesystem\Filesystem;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Manager\CartManager;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 /**
  * @Route("/product")

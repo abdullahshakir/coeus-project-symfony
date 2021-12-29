@@ -52,9 +52,5 @@
 
 {% block scripts %}
     {{ parent() }}
-    <script>
-        $(document).ready(function() {
-            $('#orders').DataTable();
-        } );
-    </script>
+    {{ encore_entry_script_tags('order_index') }}
 {% endblock %}

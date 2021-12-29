@@ -58,12 +58,12 @@
             <div class="col-lg-4 col-md-4 text-center pt-xs-30">
                 <div class="li-banner">
                     <a href="#">
-                        <img src="{{ asset('buyer_assets/images/banner/1_1.jpg') }}" alt="">
+                        <img src="{{ asset('build/buyer_images/banner/1_1.jpg') }}" alt="">
                     </a>
                 </div>
                 <div class="li-banner mt-15 mt-sm-30 mt-xs-30">
                     <a href="#">
-                        <img src="{{ asset('buyer_assets/images/banner/1_2.jpg') }}" alt="">
+                        <img src="{{ asset('build/buyer_images/banner/1_2.jpg') }}" alt="">
                     </a>
                 </div>
             </div>
@@ -113,6 +113,11 @@
                                         <h4><a class="product_name" href="{{ path('buyer_product_show', {'id': product.id}) }}">{{ product.name }}</a></h4>
                                         <div class="price-box">
                                             <span class="new-price">${{ product.price }}</span>
+                                            {% if product.quantity > 0 %}
+                                                <span class="item-quantity pull-right" style="font-size: 11px;"><b>{{ product.quantity }}</b> items in stock</span>
+                                            {% else %}
+                                                <span class="item-quantity pull-right" style="font-size: 11px;color:red;"><b>Out of stock</b></span>
+                                            {%  endif %}
                                         </div>
                                     </div>
                                 </div>

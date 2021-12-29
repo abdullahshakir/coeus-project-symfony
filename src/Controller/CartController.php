@@ -10,6 +10,7 @@ use App\Form\CartType;
 use App\Form\PlaceOrderType;
 use App\Manager\CartManager;
 use App\Entity\Order;
+use Symfony\Component\Uid\Uuid;
 
 class CartController extends AbstractController
 {
@@ -55,8 +56,9 @@ class CartController extends AbstractController
         $cart->setUser($this->getUser());
         $cart->setStatus(Order::STATUS_NEW);
         $cart->setUpdatedAt(new \DateTime());
+        $cart->setToken(Uuid::v4());
         $cartManager->save($cart);
-        
+ 
         return $this->redirectToRoute('buyer_homepage');
     }
 }

@@ -42,6 +42,11 @@ class UserFeedback
      */
     private $user;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Order::class, inversedBy="userFeedback")
+     */
+    private $reviewOrder;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -103,6 +108,18 @@ class UserFeedback
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getReviewOrder(): ?Order
+    {
+        return $this->reviewOrder;
+    }
+
+    public function setReviewOrder(?Order $reviewOrder): self
+    {
+        $this->reviewOrder = $reviewOrder;
 
         return $this;
     }
